@@ -5,42 +5,48 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
   <meta name="author" content="Davide Branciamore">
-  <meta name="desciption" content="Gazeteer Application with searchable map and country information">
+  <meta name="description" content="Gazetteer Application with searchable map and country information">
 
-  <title>Gazeteer</title>
+  <title>Gazetteer</title>
   <link rel="icon" type="image/png" href="images/favicon.ico" />
 
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500&family=Libre+Franklin:wght@200&display=swap"
+    rel="stylesheet">
 
   <link rel="stylesheet" href="./libs/bootstrap/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="./styles/style.min.css" />
+  <link rel="stylesheet" href="./styles/style.css" />
   <link rel="stylesheet" href="./libs/leaflet/leaflet.min.css" />
   <link rel="stylesheet" href="./libs/jqueryui/jquery-ui.min.css" />
   <link rel="stylesheet" href="./libs/fontawesome/fontawesome.min.css" />
   <link rel="stylesheet" href="./libs/fontawesome/solid.min.css" />
+  <link rel="stylesheet" href="./libs/fontawesome/brands.min.css" />
   <link rel="stylesheet" href="./libs/leaflet-extra-markers/leaflet.extra-markers.min.css" />
   <link rel="stylesheet" href="./libs/markercluster/MarkerCluster.css" />
+
+  <!-- <script src="https://kit.fontawesome.com/e0655871bc.js" crossorigin="anonymous"></script> -->
 
   <title>Gazetteer</title>
 </head>
 
 <body class="full-height">
-  <!--<div id="preloader">
-    <div id="loader">
-      <img src="./images/gazetteerloader.png" id="loadImage" />
-      <div class="spinner-border text-danger" role="status" id="spinner">
-        <span class="sr-only">Loading...</span>
-      </div>
-    </div>
-  </div>-->
 
-  <div class="navbar navbar-expand-lg bg-dark navbar-dark navbar-fixed-top">
-    <img src="./images/gazetteer.png" id="logo" />
-    <button class="navbar-toggler text-light border-danger badge" type="button" data-toggle="collapse"
+  <div id="preloader">
+    <div class="text-center">
+      <strong>Loading</strong>
+      <div class="spinner-grow text-warning" role="status" aria-hidden="true"></div>
+    </div>
+    <div class="text-center" id="loadImage">
+      <img src="./images/logo.png" />
+    </div>
+  </div>
+
+  <div class="navbar navbar-expand-lg bg-secondary navbar-light navbar-fixed-top">
+    <img src="./images/logo.png" id="logo" />
+    <button class="navbar-toggler text-warning border-warning badge" type="button" data-toggle="collapse"
       data-target="#details" id="detailButton">
-      <span>Details </span>
+      <span>Country Statistics</span>
     </button>
-    <ul class="collapse navbar-collapse text-light list-unstyled" id="details">
+    <ul class="collapse navbar-collapse text-warning list-unstyled" id="details">
       <li><img id="flag" class="info" /></li>
       <li class="info">Capital:&nbsp;<span id="capital"></span></li>
       <li class="info">Area(km<sup>2</sup>):&nbsp;<span id="area"></span></li>
@@ -50,34 +56,48 @@
   </div>
 
   <div id="search">
-    <input type="type" id="countrySearch" placeholder="Search..." class="bg-dark text-light text-center border-light" />
+    <input type="type" id="countrySearch" placeholder="Search..." class="bg-light text-center border-dark" />
   </div>
 
-  <div class="container-fluid fill-height bg-dark">
-    <div class="row bg-dark" id="map">
-      <div class="controlsdiv"></div>
+  <div class="container-fluid fill-height bg-light">
+    <div class="row bg-light" id="map">
+
+      <div class="btn-group btn-group-toggle fixed-bottom" data-toggle="buttons" id="options"></div>>
+        <ul id="controlsdiv">
+        
+        <li>
+          <button id="cityBtn" type="button" class="btn" data-toggle="collapse" aria-expanded="true"
+          aria-controls="collapseExample">
+          <i class="fa fa-city"></i>
+          <span id="infoText">Cities</span>
+        </button>
+        </li>
+        <li>
+        <button id="airportBtn" type="button" class="btn" data-toggle="collapse" aria-expanded="true"
+          aria-controls="collapseExample">
+          <i class="fa fa-plane-departure"></i>
+          <span id="infoText">Airports</span>
+        </button>
+        </li>
+        <li>
+        <button id="earthquakeBtn" type="button" class="btn" data-toggle="collapse" aria-expanded="true"
+          aria-controls="collapseExample">
+          <i class="fa fa-exclamation-triangle"></i>
+          <i id="infoText">Earthquakes</i>
+        </button>
+        </li>
+        </ul>
+      </div>
+
     </div>
   </div>
-  <footer>
-    <div class="btn-group btn-group-toggle fixed-bottom" data-toggle="buttons" id="options">
-      <label class="btn badge btn-secondary active">
-        <input type="radio" name="options" id="earthquakeBtn" />
-        Earthquakes
-      </label>
-      <label class="btn badge btn-secondary">
-        <input type="radio" name="options" id="cityBtn" /> Cities
-      </label>
-      <label class="btn badge btn-secondary">
-        <input type="radio" name="options" id="airportBtn" /> Airports
-      </label>
-    </div>
-  </footer>
+
 
   <div class="modal" tabindex="-1" id="infoModal">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header bg-secondary">
-          <h5 class="modal-title text-light" id="modalTitle"></h5>
+          <h5 class="modal-title bg-secondary text-warning" id="modalTitle"></h5>
           <br />
 
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -86,23 +106,23 @@
         </div>
         <div class="accordion" id="infoAccordion">
           <div class="collapse show" id="generalInfo" data-parent="#infoAccordion">
-            <div class="modal-body bg-dark text-light">
-              <ul id="modalInfo" class="text-light"></ul>
+            <div class="modal-body bg-secondary text-warning">
+              <ul id="modalInfo" class="text-warning"></ul>
             </div>
           </div>
           <div class="collapse" id="wikiInfo" data-parent="#infoAccordion">
-            <div class="modal-body bg-dark text-light">
+            <div class="modal-body bg-secondary text-warning">
               <p id="modalBody"></p>
             </div>
           </div>
           <div class="collapse" id="weatherInfo" data-parent="#infoAccordion">
-            <div class="modal-body bg-dark text-light">
+            <div class="modal-body bg-secondary text-warning">
               <img id="weatherImage" src="" />
               <ul id="weatherModalList"></ul>
             </div>
           </div>
           <div class="collapse" id="forecastInfo" data-parent="#infoAccordion">
-            <div class="modal-body bg-dark text-light">
+            <div class="modal-body bg-secondary text-warning">
               <ul class="list-group">
                 <li class="list-group-item flex-fill">
                   <img id="forecastImg1" class="forecastImg" />
@@ -131,42 +151,44 @@
               </ul>
             </div>
           </div>
-          
+
         </div>
-        <div class="modal-footer bg-dark">
-          <button type="button" class="btn btn-secondary badge" data-target="#generalInfo" data-toggle="collapse"
-            aria-expanded="true" aria-controls="collapseExample">
-            Info
+        <div class="modal-footer bg-secondary">
+          <button type="button" class="btn" data-target="#generalInfo" data-toggle="collapse" aria-expanded="true"
+            aria-controls="collapseExample">
+            <i class="fa fa-info"></i>
           </button>
-          <button type="button" class="btn btn-secondary badge" data-target="#wikiInfo" data-toggle="collapse"
-            aria-expanded="false" aria-controls="collapseExample">
-            Wiki
+          <button type="button" class="btn" data-target="#wikiInfo" data-toggle="collapse" aria-expanded="false"
+            aria-controls="collapseExample">
+            <i class="fa" style="font-family: 'EB Garamond', serif;"> W </i>
+
           </button>
-          <button type="button" class="btn btn-secondary badge" data-target="#weatherInfo" data-toggle="collapse"
-            aria-expanded="false" aria-controls="collapseExample">
-            Weather
+          <button type="button" class="btn" data-target="#weatherInfo" data-toggle="collapse" aria-expanded="false"
+            aria-controls="collapseExample">
+            <i class="fa fa-cloud-sun"></i>
+
           </button>
-          <button type="button" class="btn btn-secondary badge" data-target="#forecastInfo" data-toggle="collapse"
-            aria-expanded="false" aria-controls="collapseExample">
-            Forecast
+          <button type="button" class="btn" data-target="#forecastInfo" data-toggle="collapse" aria-expanded="false"
+            aria-controls="collapseExample">
+            <i class="fa fa-cloud-sun"><sub>+5</sub></i>
+
           </button>
-          <button type="button" class="btn btn-danger badge" data-dismiss="modal">
-            Close
+          <button type="button" class="btn" data-dismiss="modal">
+            <i class="fa fa-times-circle"></i>
           </button>
         </div>
       </div>
     </div>
-  </div>
 
-  <script src="./libs/leaflet/leaflet.js"></script>
-  <script src="./libs/jquery/jquery.min.js"></script>
-  <script src="./libs/jqueryui/jquery-ui.min.js"></script>
-  <script src="./libs/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="./libs/leaflet-extra-markers/leaflet.extra-markers.min.js"></script>
-  <script src="./libs/markercluster/leaflet.markercluster.min.js"></script>
-  <!--<script src="./scripts/country.js"></script>-->
-  <!-- <script src="./scripts/point-of-interest.js"></script> -->
-  <script src="./scripts/script.js"></script>
+    <script src="./libs/leaflet/leaflet.js"></script>
+    <script src="./libs/jquery/jquery.min.js"></script>
+    <script src="./libs/jqueryui/jquery-ui.min.js"></script>
+    <script src="./libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="./libs/leaflet-extra-markers/leaflet.extra-markers.min.js"></script>
+    <script src="./libs/markercluster/leaflet.markercluster.min.js"></script>
+    <!--<script src="./scripts/country.js"></script>-->
+    <!-- <script src="./scripts/point-of-interest.js"></script> -->
+    <script src="./scripts/script.js"></script>
 </body>
 
 </html>

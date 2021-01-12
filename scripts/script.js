@@ -22,14 +22,14 @@ class Country {
           }
           ).done(result => {
               const marker = L.ExtraMarkers.icon({
-                  icon: " fa-location-arrow",
+                  icon: " fa-map-pin",
                   markerColor: "#BBDEF0",
                   shape: "square",
                   svg: !0,
                   prefix: "fa"
               }),
                   capitalMarker = L.ExtraMarkers.icon({
-                      icon: " fa-location-arrow",
+                      icon: " fa-map-pin",
                       markerColor: "#2C95C9",
                       shape: "star",
                       svg: !0,
@@ -83,7 +83,7 @@ class Country {
               }
           }).done(result => {
               const marker = L.ExtraMarkers.icon({
-                  icon: "fa-binoculars",
+                  icon: "fa-plane-departure",
                   markerColor: "#AFD5AA",
                   shape: "penta",
                   svg: !0,
@@ -241,7 +241,7 @@ class PointOfInterest {
   //Add wiki details to the modal
   displayWikiDetails() {
     $('#modalBody').html(
-      `${this.cleanExtract}<br><a href=https://${this.wikiUrl} target="_blank">Full Wikipedia Article</a>`
+      `${this.cleanExtract}<br><a href=https://${this.wikiUrl} target="_blank">Full Article on Wikipedia</a>`
     );
   }
 
@@ -286,9 +286,11 @@ class PointOfInterest {
     });
   }
 
+  
+  
   //Add weather info to the modal
   displayWeather() {
-    const forecast = [];
+    // const forecast = [];
     //Set up a counter to be used to set up index of forecast array
     let i = 0;
     this.dailyWeather.forEach((day) => {
@@ -299,14 +301,17 @@ class PointOfInterest {
         timeZone: this.timeZone,
         weekday: 'long',
       });
-
+      
       $(`#forecastImg${i}`).attr(
         'src',
         `https://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png`
       );
       $(`#forecast${i}`).html(
         `<li>${dayOfWeek}</li><li>${day.weather[0].description
-        }</li><li>Min Temp:&nbsp;${day.temp.min.toFixed()}&#8451;</li><li>Max Temp:&nbsp;${day.temp.max.toFixed()}&#8451;</li>`
+        }</li><li>Min Temp:&nbsp;${day.temp.min.toFixed()}&#8451;
+        </li><li>Max Temp:&nbsp;${day.temp.max.toFixed()}&#8451;
+        </li><li>Humidity:&nbsp;${day.humidity}%;</li>
+        </li><li>Wind Speed:&nbsp;${Math.round(day.wind_speed * 2.237)}mph;</li>`
       );
 
       i++;
@@ -406,6 +411,13 @@ const light = L.tileLayer(
   }
 );
 
+const topographicmap  =
+L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+{id: 'mapbox.streets',
+tileSize: 512,
+zoomOffset: -1,
+attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'});
+
 const earthAtNight = L.tileLayer(
   'https://map1.vis.earthdata.nasa.gov/wmts-webmerc/VIIRS_CityLights_2012/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}',
   {
@@ -418,7 +430,7 @@ const earthAtNight = L.tileLayer(
     tilematrixset: 'GoogleMapsCompatible_Level',
   }
 );
-const temp = L.tileLayer('https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid=adcf651d877266947f5d5edc61315f6e', {
+const temperature = L.tileLayer('https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid=adcf651d877266947f5d5edc61315f6e', {
   tileSize: 512,
   zoomOffset: -1,
   layer: 'temp_new',
@@ -430,23 +442,36 @@ const precipitation = L.tileLayer('https://tile.openweathermap.org/map/{layer}/{
   zoomOffset: -1,
   layer: 'precipitation_new',
 });
+const clouds = L.tileLayer('https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid=adcf651d877266947f5d5edc61315f6e', {
+  tileSize: 512,
+  minZoom: 2,
+  zoomOffset: -1,
+  layer: 'clouds_new',
+});
 //Create map and set its default layer to the dark theme
 const map = L.map('map', {
   layers: [light],
+  zoomControl: false
 });
+
+new L.Control.Zoom({ position: 'topright' }).addTo(map);
+
+
 
 //Add the different tile layers to the control button and add the button to the map
 const baseMaps = {
   Light: light,
   Dark: dark,
+  Topographic: topographicmap,
   Satellite: satellite,
   'Earth At Night': earthAtNight,
 };
 const weatherOverlays = {
-  Temperature: temp,
+  Temperature: temperature,
   Precipitation: precipitation,
+  Clouds: clouds,
 };
-L.control.layers(baseMaps, weatherOverlays).addTo(map);
+L.control.layers(baseMaps, weatherOverlays, {position: 'topright'}).addTo(map);
 
 //Initialise the layer groups to be populated with markers
 const earthquakeLayer = L.layerGroup();
@@ -525,7 +550,8 @@ const selectNewCountry = (country, type) => {
       }
       countryOutline = L.geoJSON(result, {
         style: {
-          color: '#fd7e14',
+          color:'#ffc107'
+          ,
         },
       }).addTo(map);
       map.fitBounds(countryOutline.getBounds());

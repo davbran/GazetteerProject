@@ -1,43 +1,21 @@
 body {
   background-color: #8e9297;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Libre Franklin', sans-serif;
   font-size: 20px;
 }
-
+ 
 #preloader {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   z-index: 9999;
   overflow: hidden;
-  background-color: #7f878f;
+  background-color: #6c757d;
   height: 100vh;
   width: 100vw;
-}
-
-#loader {
-  position: relative;
-  display: block;
-  margin: 30vh auto;
-  width: 220px;
-  height: 300px;
-}
-
-#loadImage {
-  position: absolute;
-  top: 0px;
-  left: 10px;
-}
-
-#spinner {
-  position: absolute;
-  left: 87px;
-  top: 58px;
-  height: 40px;
-  width: 40px;
-}
+} 
 
 .full-height {
   display: flex;
@@ -53,6 +31,7 @@ body {
 .controlsdiv {
   display: table;
   width: 100%;
+  z-index: 9998;
 }
 
 #logo {
@@ -62,13 +41,13 @@ body {
 }
 
 #search {
-  background-color: #7f878f;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #6c757d;
+  background-color: #ffc107;
+  padding: 1px;
+  border-bottom: 3px solid #6c757d;
 }
 
 #countrySearch {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Libre Franklin', sans-serif;
   min-width: 270px;
   width: 50vw;
   height: 45px;
@@ -80,9 +59,9 @@ body {
 
 .ui-autocomplete {
   z-index: 9999 !important;
-  color: #f8f9fa;
+  color: #080808;
   border: 1px solid #6c757d;
-  background-color: #7f878f;
+  background-color: #f8f7f6;
   border-bottom-left-radius: 15px;
   border-bottom-right-radius: 15px;
 }
@@ -107,22 +86,53 @@ body {
   color: #6c757d;
 }
 
+.btn .fa {
+	display: flex;
+  position: relative;
+	content: '';
+	line-height: 5rem;
+	font-size: 1.8rem;
+  color: #ffc107;
+}
+
+li .btn {
+  z-index: 499;
+  position: relative;
+}
+
+.btn .fa:hover {
+  color: #000000
+
+}
+
+.btn .fa:active{
+  color: #000000;
+  background-image: -webkit-linear-gradient(#efefef 0%, #d6d6d6 100%);
+  border-bottom: solid 2px #d8d8d8;
+}
+
+#infoText {
+  font-size: inherit;
+  color: #ffc107;
+}
+
 #map {
   height: 100%;
   min-width: 100vw;
 }
 
 footer {
-  margin-top: 28px;
+  margin-top: 2px;
 }
 
 #options {
-  height: 28px;
+  height: 2px;
 }
 
 #modalInfo,
 #modalBody {
   font-size: 0.7em;
+  z-index: 9999 !important;
 }
 
 .list-group-item {
@@ -136,7 +146,7 @@ footer {
 
 .forecastList {
   background-color: #6c757d;
-  color: #f8f9fa;
+  color: #ffc107;
   font-size: 0.5em;
   display: inline-grid;
   list-style-type: square;
@@ -145,7 +155,7 @@ footer {
 .forecastList li:first-child {
   list-style: none;
   font-size: 1.3em;
-  color: #fd7e14;
+  color:#ffc107;
   font-weight: bold;
 }
 
@@ -166,6 +176,8 @@ footer {
   border-radius: 20px;
 }
 
+
+
 .marker-cluster div {
   width: 30px;
   height: 30px;
@@ -174,7 +186,7 @@ footer {
 
   text-align: center;
   border-radius: 15px;
-  font: 12px 'Montserrat', Arial, Helvetica, sans-serif;
+  font: 12px 'Libre Franklin', Arial, Helvetica, sans-serif;
   color: #f8f9fa;
 }
 
@@ -189,7 +201,7 @@ footer {
 }
 
 @media (min-width: 900px) {
-  .btn-secondary {
+  .btn {
     font-size: 20px;
   }
 }
