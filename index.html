@@ -19,11 +19,9 @@
   <link rel="stylesheet" href="./libs/jqueryui/jquery-ui.min.css" />
   <link rel="stylesheet" href="./libs/fontawesome/fontawesome.min.css" />
   <link rel="stylesheet" href="./libs/fontawesome/solid.min.css" />
-  <link rel="stylesheet" href="./libs/fontawesome/brands.min.css" />
   <link rel="stylesheet" href="./libs/leaflet-extra-markers/leaflet.extra-markers.min.css" />
   <link rel="stylesheet" href="./libs/markercluster/MarkerCluster.css" />
 
-  <!-- <script src="https://kit.fontawesome.com/e0655871bc.js" crossorigin="anonymous"></script> -->
 
   <title>Gazetteer</title>
 </head>
@@ -51,7 +49,7 @@
       <li class="info">Capital:&nbsp;<span id="capital"></span></li>
       <li class="info">Area(km<sup>2</sup>):&nbsp;<span id="area"></span></li>
       <li class="info">Population:&nbsp;<span id="population"></span></li>
-      <li class="info">Currency:&nbsp; <span id="currency"></span></li>
+      <li class="info">Currency:&nbsp;<span id="currency"></span></li>
     </ul>
   </div>
 
@@ -73,17 +71,10 @@
         </button>
         </li>
         <li>
-        <button id="airportBtn" type="button" class="btn" data-toggle="collapse" aria-expanded="true"
+        <button id="regionBtn" type="button" class="btn" data-toggle="collapse" aria-expanded="true"
           aria-controls="collapseExample">
-          <i class="fa fa-plane-departure"></i>
-          <span id="infoText">Airports</span>
-        </button>
-        </li>
-        <li>
-        <button id="earthquakeBtn" type="button" class="btn" data-toggle="collapse" aria-expanded="true"
-          aria-controls="collapseExample">
-          <i class="fa fa-exclamation-triangle"></i>
-          <i id="infoText">Earthquakes</i>
+          <i class="fa fa-map"></i>
+          <span id="infoText">Regional</span>
         </button>
         </li>
         </ul>
@@ -91,6 +82,23 @@
 
     </div>
   </div>
+  
+<select id="poiSel"class="form-select" aria-label="Default select example">
+  <option selected>Places of Interest</option>
+  <option value="archaeology">Archaeology</option>
+  <option value="theaters_and_entertainments">Theaters and Entertainment</option>
+  <option value="historic">Places of Historic Interest</option>
+  <option value="architecture">Architecture</option>
+  <option value="amusements">Amusements</option>
+  <option value="accomodations">Accomodation</option>
+  <option value="industrial_facilities">Industrial Facilities</option>
+  <option value="beaches">Beaches</option>
+  <option value="geological_formations">Geological Formations</option>
+  <option value="reigion">Places of Religious Interest</option>
+  <option value="foods">Dining</option>
+  <option value="shops">Shopping</option>
+  <option value="transport">Transport</option>
+</select>
 
 
   <div class="modal" tabindex="-1" id="infoModal">
@@ -101,7 +109,7 @@
           <br />
 
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
+            <span aria-hidden="true">X</span>
           </button>
         </div>
         <div class="accordion" id="infoAccordion">

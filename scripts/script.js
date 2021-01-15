@@ -1,171 +1,206 @@
+//Initialise the layer groups to be populated with markers
+const poiLayer = L.layerGroup();
+const cityLayer = L.layerGroup();
+const regionLayer = L.layerGroup();
+const regionMarkers = L.markerClusterGroup({
+  iconCreateFunction: (cluster) => {
+    return L.divIcon({
+      html: `<div><span>${cluster.getChildCount()}</span></div>`,
+      className: 'region marker-cluster marker-cluster',
+      iconSize: new L.Point(40, 40),
+    });
+  },
+});
+
+const xid = "";
+
 class Country {
   constructor(name, alpha2Code, area, flag, capital, population, currency, currencySymbol) {
-      this.name = name, 
-      this.alpha2Code = alpha2Code, 
-      this.area = area || "Not Found", this.flag = flag, 
-      this.capital = capital || "Not Found", 
-      this.population = population || "Not Found", 
-      this.currency = currency || "Not Found", 
+    this.name = name,
+      this.alpha2Code = alpha2Code,
+      this.area = area || "Not Found", this.flag = flag,
+      this.capital = capital || "Not Found",
+      this.population = population || "Not Found",
+      this.currency = currency || "Not Found",
       this.currencySymbol = currencySymbol || ""
-  } 
-  
-  
+  }
+
+
   getCities() {
-      cityLayer.clearLayers(),
-          $.ajax({
-              url: "php/getCityData.php",
-              dataType: "json",
-              type: "POST",
-              data: {
-                  countryCode: this.alpha2Code
-              }
-          }
-          ).done(result => {
-              const marker = L.ExtraMarkers.icon({
-                  icon: " fa-map-pin",
-                  markerColor: "#BBDEF0",
-                  shape: "square",
-                  svg: !0,
-                  prefix: "fa"
-              }),
-                  capitalMarker = L.ExtraMarkers.icon({
-                      icon: " fa-map-pin",
-                      markerColor: "#2C95C9",
-                      shape: "star",
-                      svg: !0,
-                      prefix: "fa"
-                  });
-
-              result.data.forEach(city => {
-                  if ("PPLC" == city.fcode) {
-                      const newMarker = L.marker([city.lat, city.lng], {
-                          icon: capitalMarker,
-                          type: "city",
-                          name: city.name,
-                          population: city.population,
-                          latitude: city.lat,
-                          longitude: city.lng,
-                          capital: !0,
-                          geonameId: city.geonameId
-                      }).addTo(cityLayer);
-                      newMarker.on("click", infoPopup)
-                  }
-                  else {
-                      const newMarker = L.marker([city.lat, city.lng], {
-                          icon: marker,
-                          type: "city",
-                          name: city.name,
-                          population: city.population,
-                          latitude: city.lat,
-                          longitude: city.lng,
-                          geonameId: city.geonameId
-                      }).addTo(cityLayer);
-
-                      newMarker.on("click", infoPopup)
-                  }
-              })
-          }).fail(() => {
-              $("#modalTitle").html("Error"),
-                  $("#modalBody").html("Unfortunately there was an error fetching city information. Please try again or select a different country."),
-                  $("#infoModal").modal()
-          })
-  }
-
-  getAirports() {
-      airportLayer.clearLayers(),
-          airportMarkers.clearLayers(airportLayer),
-          $.ajax({
-              url: "php/getAirports.php",
-              dataType: "json",
-              type: "POST",
-              data: {
-                  countryCode: this.alpha2Code
-              }
-          }).done(result => {
-              const marker = L.ExtraMarkers.icon({
-                  icon: "fa-plane-departure",
-                  markerColor: "#AFD5AA",
-                  shape: "penta",
-                  svg: !0,
-                  prefix: "fa"
-              });
-              result.data.forEach(airport => {
-                  const newMarker = L.marker([airport.lat, airport.lng], {
-                      icon: marker,
-                      name: airport.name,
-                      latitude: airport.lat,
-                      longitude: airport.lng,
-                      type: "airport",
-                      geonameId: airport.geonameId
-                  }).addTo(airportLayer);
-                  newMarker.on("click", infoPopup)
-              }),
-                  airportMarkers.addLayer(airportLayer)
-          }).fail(() => {
-              $("#modalTitle").html("Error"),
-                  $("#modalBody").html("Unfortunately there was an error fetching the airport data. Please try selecting a different country"),
-                  $("#infoModal").modal()
-          })
-  }
-
-  getEarthquakes(north, south, east, west) {
-      earthquakeLayer.clearLayers(),
-          $.ajax({
-              url: "php/getEarthquakes.php",
-              dataType: "json",
-              type: "POST",
-              data: { north: north, south: south, east: east, west: west }
-          }).done(result => {
-              result.data.forEach(quake => {
-                  const newQuake = L.circle([quake.lat, quake.lng], {
-                      color: "#dc3545",
-                      fillColor: "#9C1C28",
-                      fillOpacity: .5,
-                      radius: 500 * Math.pow(quake.magnitude, 3)
-                  }).addTo(earthquakeLayer);
-                  newQuake.bindPopup(`Magnitude: ${quake.magnitude} <br> Date: ${quake.datetime}`)
-              })
-          }).fail(() => {
-              $("#modalTitle").html("Error"),
-                  $("#modalBody").html("Unfortunately there was an error fetching the earthquake data. Please try selecting a different country"),
-                  $("#infoModal").modal()
-          })
-  }
-
-   getBoundingBox() {
+    cityLayer.clearLayers(),
       $.ajax({
-          url: "php/getBoundingBox.php",
-          dataType: "json",
-          type: "POST",
-          data: {
-              countryCode: this.alpha2Code
-            }
-      }).done(result => {
-          const { north: north, south: south, east: east, west: west } = result.data[0];
-          this.getEarthquakes(north, south, east, west)
+        url: "php/getCityData.php",
+        dataType: "json",
+        type: "POST",
+        data: {
+          countryCode: this.alpha2Code
+        }
+      }
+      ).done(result => {
+        const marker = L.ExtraMarkers.icon({
+          icon: " fa-map-pin",
+          markerColor: "#BBDEF0",
+          shape: "square",
+          svg: !0,
+          prefix: "fa"
+        }),
+          capitalMarker = L.ExtraMarkers.icon({
+            icon: " fa-map-pin",
+            markerColor: "#2C95C9",
+            shape: "star",
+            svg: !0,
+            prefix: "fa"
+          });
+
+        result.data.forEach(city => {
+          if ("PPLC" == city.fcode) {
+            const newMarker = L.marker([city.lat, city.lng], {
+              icon: capitalMarker,
+              type: "city",
+              name: city.name,
+              population: city.population,
+              latitude: city.lat,
+              longitude: city.lng,
+              capital: !0,
+              geonameId: city.geonameId
+            }).addTo(cityLayer);
+            newMarker.on("click", infoPopup)
+          }
+          else {
+            const newMarker = L.marker([city.lat, city.lng], {
+              icon: marker,
+              type: "city",
+              name: city.name,
+              population: city.population,
+              latitude: city.lat,
+              longitude: city.lng,
+              geonameId: city.geonameId
+            }).addTo(cityLayer);
+
+            newMarker.on("click", infoPopup)
+          }
+        })
       }).fail(() => {
-          $("#modalTitle").html("Error"),
-              $("#modalBody").html("Unfortunately there was an error fetching the earthquake data. Please try selecting a different country"),
-              $("#infoModal").modal()
+        $("#modalTitle").html("Error"),
+          $("#modalBody").html("Unfortunately there was an error fetching city information. Please try again or select a different country."),
+          $("#infoModal").modal()
       })
   }
 
-  
+  getRegions() {
+    regionLayer.clearLayers(),
+      regionMarkers.clearLayers(regionLayer),
+      $.ajax({
+        url: "php/getRegions.php",
+        dataType: "json",
+        type: "POST",
+        data: {
+          countryCode: this.alpha2Code
+        }
+      }).done(result => {
+        const marker = L.ExtraMarkers.icon({
+          icon: "fa-map-pin",
+          markerColor: "#AFD5AA",
+          shape: "penta",
+          svg: !0,
+          prefix: "fa"
+        });
+        result.data.forEach(region => {
+          const newMarker = L.marker([region.lat, region.lng], {
+            icon: marker,
+            name: region.name,
+            latitude: region.lat,
+            longitude: region.lng,
+            type: "region",
+            geonameId: region.geonameId
+          }).addTo(regionLayer);
+          newMarker.on("click", infoPopup)
+        }),
+          regionMarkers.addLayer(regionLayer)
+      }).fail(() => {
+        $("#modalTitle").html("Error"),
+          $("#infoAccordion").html("Unfortunately there was an error fetching the region data. Please try selecting a different country"),
+          $("#infoModal").modal()
+      })
+  };
+
+
+
+  getBoundingBox() {
+    $('#poiSel').on('change', () =>
+      $.ajax({
+        url: "php/getBoundingBox.php",
+        dataType: "json",
+        type: "POST",
+        data: {
+          countryCode: this.alpha2Code
+        }
+      }).done(result => {
+        const { north: north, south: south, east: east, west: west } = result.data[0];
+        this.getPois(north, south, east, west);
+      }).fail(() => {
+        $("#modalTitle").html("Error"),
+          $("#modalBody").html("Unfortunately there was an error fetching the poi data. Please try selecting a different country"),
+          $("#infoModal").modal()
+      })
+    )
+  };
+
+
+
+  getPois(north, south, east, west) {
+
+    poiLayer.clearLayers(),
+
+    $.ajax({
+        url: "php/getPoiData.php",
+        dataType: "json",
+        type: "POST",
+        data: { 
+          north: north, 
+          south: south, 
+          east: east, 
+          west: west,
+          kind: $('#poiSel').val() 
+      }
+          })
+          .done(result => {
+              result.data.forEach(poi => {
+          const lat = poi.point.lat;
+          const lng = poi.point.lon;
+          const newPoi = L.circleMarker([lat, lng], {
+            radius: 2,
+            color: '#031233'
+          })
+          .addTo(poiLayer);
+            const wikiLink = 'http://www.wikidata.org/wiki/' + poi.wikidata;
+            let popupContent = "<p><b>Name: </b>" + poi.name +
+            "<br><a target='_blank' href='" + wikiLink + "'><em>More Info</em></a></p>";
+             newPoi.bindPopup(popupContent);
+        
+        }).fail(() => {
+          $("#modalTitle").html("Error"),
+            $("#modalBody").html("Unfortunately there was an error fetching the poi data. Please try selecting a different country"),
+            $("#infoModal").modal()
+        })
+      })
+      }
+ 
   displayInfo() {
-          $("#flag").attr("src", this.flag),
-          $("#area").html(` ${this.area}`),
-          $("#capital").html(` ${this.capital}`),
-          $("#currency").html(` ${this.currency} (${this.currencySymbol})`),
-          $("#population").html(` ${this.population}`)
-  }
+    $('#flag').attr('src', this.flag);
+    $('#area').html(` ${this.area}`);
+    $('#capital').html(` ${this.capital}`);
+    $('#currency').html(` ${this.currency} (${this.currencySymbol})`);
+    $('#population').html(` ${this.population}`);
+  };
 
 };
 
-  
 
-  //Create POI class with methods for displaying information about city and Airport markers
 
-class PointOfInterest {
+//Create POI class with methods for displaying information about city and region markers
+
+class Features {
   constructor(latitude, longitude, geonameId, name, population, type) {
     this.latitude = latitude;
     this.longitude = longitude;
@@ -196,7 +231,7 @@ class PointOfInterest {
     this.distance = d.toFixed();
   }
 
-  //Get wikipedia article for the POI and display a short extract
+  //Get wikipedia an dphotos article for the POI and display a short extract
   getWikiDetails() {
     $.ajax({
       url: 'php/getWikiUrl.php',
@@ -240,9 +275,9 @@ class PointOfInterest {
   }
   //Add wiki details to the modal
   displayWikiDetails() {
+
     $('#modalBody').html(
-      `${this.cleanExtract}<br><a href=https://${this.wikiUrl} target="_blank">Full Article on Wikipedia</a>`
-    );
+      `${this.cleanExtract}<br><a href=https://${this.wikiUrl} target="_blank">Full Article on Wikipedia</a>`);
   }
 
 
@@ -286,8 +321,8 @@ class PointOfInterest {
     });
   }
 
-  
-  
+
+
   //Add weather info to the modal
   displayWeather() {
     // const forecast = [];
@@ -301,7 +336,7 @@ class PointOfInterest {
         timeZone: this.timeZone,
         weekday: 'long',
       });
-      
+
       $(`#forecastImg${i}`).attr(
         'src',
         `https://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png`
@@ -335,17 +370,17 @@ class PointOfInterest {
 
 
 
-class Airport extends PointOfInterest {
+class Region extends Features {
   constructor(latitude, longitude, geonameId, name) {
     super(latitude, longitude, geonameId, name);
-    this.type = 'airport';
+    this.type = 'region';
   }
   //Add general info to the modal then display it
   displayInfo() {
-  this.getTime();
+    this.getTime();
     $('#modalTitle').html(`${this.name}`);
     $('#modalInfo').html(
-      `<li>Current Time: &nbsp; ${this.time}</li><li>Latitude: &nbsp; ${this.latitude}</li><li>Longitude: &nbsp; ${this.longitude}</li><li>Distance from your location: &nbsp; ${this.distance}km</li>`
+      `<li>Current Time: &nbsp; ${this.time}</li><li>Estimated Population: &nbsp; ${this.population}</li><li>Latitude: &nbsp; ${this.latitude}</li><li>Longitude: &nbsp; ${this.longitude}</li><li>Distance from your location: &nbsp; ${this.distance}km</li>`
     );
     $('#wikiInfo').removeClass('show');
     $('#forecastInfo').removeClass('show');
@@ -355,7 +390,7 @@ class Airport extends PointOfInterest {
   }
 };
 
-class City extends PointOfInterest {
+class City extends Features {
   constructor(latitude, longitude, geonameId, name, population, type) {
     super(latitude, longitude, geonameId, name, population, type);
   }
@@ -411,12 +446,14 @@ const light = L.tileLayer(
   }
 );
 
-const topographicmap  =
-L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
-{id: 'mapbox.streets',
-tileSize: 512,
-zoomOffset: -1,
-attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'});
+const topographicmap = L.tileLayer(
+  'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+  {
+    id: 'mapbox.streets',
+    tileSize: 512,
+    zoomOffset: -1,
+    attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+  });
 
 const earthAtNight = L.tileLayer(
   'https://map1.vis.earthdata.nasa.gov/wmts-webmerc/VIIRS_CityLights_2012/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}',
@@ -448,7 +485,8 @@ const clouds = L.tileLayer('https://tile.openweathermap.org/map/{layer}/{z}/{x}/
   zoomOffset: -1,
   layer: 'clouds_new',
 });
-//Create map and set its default layer to the dark theme
+
+
 const map = L.map('map', {
   layers: [light],
   zoomControl: false
@@ -457,8 +495,6 @@ const map = L.map('map', {
 new L.Control.Zoom({ position: 'topright' }).addTo(map);
 
 
-
-//Add the different tile layers to the control button and add the button to the map
 const baseMaps = {
   Light: light,
   Dark: dark,
@@ -466,28 +502,17 @@ const baseMaps = {
   Satellite: satellite,
   'Earth At Night': earthAtNight,
 };
+
 const weatherOverlays = {
   Temperature: temperature,
   Precipitation: precipitation,
   Clouds: clouds,
+
 };
-L.control.layers(baseMaps, weatherOverlays, {position: 'topright'}).addTo(map);
 
-//Initialise the layer groups to be populated with markers
-const earthquakeLayer = L.layerGroup();
-const cityLayer = L.layerGroup();
-const airportLayer = L.layerGroup();
-const airportMarkers = L.markerClusterGroup({
-  iconCreateFunction: (cluster) => {
-    return L.divIcon({
-      html: `<div><span>${cluster.getChildCount()}</span></div>`,
-      className: 'airportmarker-cluster marker-cluster',
-      iconSize: new L.Point(40, 40),
-    });
-  },
-});
+L.control.layers(baseMaps, weatherOverlays, { position: 'topright' }).addTo(map);
 
-//Populate the countryList array to be used with the autocomplete.
+
 const getCountryList = () => {
   const url = 'php/getCountryList.php';
   $.getJSON(url, (data) => {
@@ -513,16 +538,17 @@ const getCountryInfo = (countryCode) => {
       c.name,
       c.alpha2Code,
       c.area,
+      c.nativeName,
       c.flag,
       c.capital,
       c.population,
       c.currencies[0].name,
       c.currencies[0].symbol
     );
-    //Display info and fetch & create markers for the cities, airports, and earthquakes
+    //Display info and fetch & create markers for the cities, regions, and pois
     activeCountry.displayInfo();
     activeCountry.getCities();
-    activeCountry.getAirports();
+    activeCountry.getRegions();
     activeCountry.getBoundingBox();
   });
 };
@@ -550,7 +576,7 @@ const selectNewCountry = (country, type) => {
       }
       countryOutline = L.geoJSON(result, {
         style: {
-          color:'#ffc107'
+          color: '#ffc107'
           ,
         },
       }).addTo(map);
@@ -617,7 +643,7 @@ const jumpToUserLocation = () => {
           latitude: 51.509865,
         };
         alert(
-          'Location request denied. Sending you to the UK by default, distances shown will be based on London.'
+          'Location request denied. Default Location United Kingdom'
         );
       }
     );
@@ -658,11 +684,11 @@ $('#countrySearch').autocomplete({
   position: { my: 'top', at: 'bottom', of: '#countrySearch' },
 });
 
-//Create a pop up when a airportmarker is clicked
+//Create a pop up when a regionmarker is clicked
 const infoPopup = (event) => {
   let marker;
   const markerDetails = event.target.options;
-  //create either new city or airportobject
+  //create either new city or regionobject
   if (markerDetails.type == 'city') {
     marker = new City(
       markerDetails.latitude,
@@ -672,8 +698,8 @@ const infoPopup = (event) => {
       markerDetails.population,
       markerDetails.type
     );
-  } else if (markerDetails.type == 'airport') {
-    marker = new Airport(
+  } else if (markerDetails.type == 'region') {
+    marker = new Region(
       markerDetails.latitude,
       markerDetails.longitude,
       markerDetails.geonameId,
@@ -716,22 +742,24 @@ $(document).ready(() => {
   //Change country based on map click
   map.on('click', getCountryFromClick);
 
-  $('#earthquakeBtn').click(() => {
+  $('#poiSel').change(() => {
     map.removeLayer(cityLayer);
-    map.removeLayer(airportMarkers);
-    earthquakeLayer.addTo(map);
+    map.removeLayer(regionMarkers);
+    map.addLayer(poiLayer);
+    getCountryFromClick;
+
   });
 
   $('#cityBtn').click(() => {
-    map.removeLayer(earthquakeLayer);
-    map.removeLayer(airportMarkers);
+    map.removeLayer(poiLayer);
+    map.removeLayer(regionMarkers);
     map.addLayer(cityLayer);
   });
 
-  $('#airportBtn').click(() => {
-    map.removeLayer(earthquakeLayer);
+  $('#regionBtn').click(() => {
+    map.removeLayer(poiLayer);
     map.removeLayer(cityLayer);
-    map.addLayer(airportMarkers);
+    map.addLayer(regionMarkers);
   });
 
 });

@@ -3,7 +3,7 @@ body {
   font-family: 'Libre Franklin', sans-serif;
   font-size: 20px;
 }
- 
+
 #preloader {
   position: absolute;
   top: 0;
@@ -15,7 +15,7 @@ body {
   background-color: #6c757d;
   height: 100vh;
   width: 100vw;
-} 
+}
 
 .full-height {
   display: flex;
@@ -87,11 +87,11 @@ body {
 }
 
 .btn .fa {
-	display: flex;
+  display: flex;
   position: relative;
-	content: '';
-	line-height: 5rem;
-	font-size: 1.8rem;
+  content: '';
+  line-height: 5rem;
+  font-size: 1.8rem;
   color: #ffc107;
 }
 
@@ -102,10 +102,9 @@ li .btn {
 
 .btn .fa:hover {
   color: #000000
-
 }
 
-.btn .fa:active{
+.btn .fa:active {
   color: #000000;
   background-image: -webkit-linear-gradient(#efefef 0%, #d6d6d6 100%);
   border-bottom: solid 2px #d8d8d8;
@@ -129,8 +128,7 @@ footer {
   height: 2px;
 }
 
-#modalInfo,
-#modalBody {
+#modalInfo, #modalBody {
   font-size: 0.7em;
   z-index: 9999 !important;
 }
@@ -139,8 +137,7 @@ footer {
   background-color: #6c757d;
 }
 
-#weatherModalList,
-.forecastList {
+#weatherModalList, .forecastList {
   text-transform: capitalize;
 }
 
@@ -155,7 +152,7 @@ footer {
 .forecastList li:first-child {
   list-style: none;
   font-size: 1.3em;
-  color:#ffc107;
+  color: #ffc107;
   font-weight: bold;
 }
 
@@ -164,26 +161,24 @@ footer {
   height: 80px;
 }
 
-.airport-marker-cluster {
+.region-marker-cluster {
   background-color: rgba(153, 200, 146, 0.8);
 }
 
-.airport-marker-cluster div {
+.region-marker-cluster div {
   background-color: rgba(175, 213, 170, 0.6);
 }
+
 .marker-cluster {
   background-clip: padding-box;
   border-radius: 20px;
 }
-
-
 
 .marker-cluster div {
   width: 30px;
   height: 30px;
   margin-left: 5px;
   margin-top: 5px;
-
   text-align: center;
   border-radius: 15px;
   font: 12px 'Libre Franklin', Arial, Helvetica, sans-serif;

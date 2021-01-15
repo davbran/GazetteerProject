@@ -1,5 +1,5 @@
 <?php
-$url = "https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&explaintext&exintro&redirects=1&exsentences=5&titles=".$_REQUEST['title'];
+$url = "https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&explaintext&exintro&redirects=1&exsentences=3&titles=".$_REQUEST['title'];
 
 $ch = curl_init();
 

@@ -1,11 +1,9 @@
 <?php
 
-//$url = 'http://api.geonames.org/countryCodeJSON?lat='.$_REQUEST['lat'].'&lng='.$_REQUEST['long'].'&username=spedegue';
-
 $url = 'https://api.opencagedata.com/geocode/v1/json?q='.$_REQUEST['lat'].'+'.$_REQUEST['long'].'&pretty=1&key=1733e77630f14ad5b35f69ea8159fb5a';
 $ch = curl_init();
 
-//curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+	//curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch, CURLOPT_URL,$url);
 
