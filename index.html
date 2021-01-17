@@ -29,13 +29,14 @@
 <body class="full-height">
 
   <div id="preloader">
-    <div class="text-center">
-      <strong>Loading</strong>
-      <div class="spinner-grow text-warning" role="status" aria-hidden="true"></div>
-    </div>
     <div class="text-center" id="loadImage">
       <img src="./images/logo.png" />
     </div>
+    <div class="text-center">
+      <strong>Map Initialising</strong>
+      <div class="spinner-grow text-warning" role="status" aria-hidden="true"></div>
+    </div>
+    
   </div>
 
   <div class="navbar navbar-expand-lg bg-secondary navbar-light navbar-fixed-top">
@@ -60,8 +61,8 @@
   <div class="container-fluid fill-height bg-light">
     <div class="row bg-light" id="map">
 
-      <div class="btn-group btn-group-toggle fixed-bottom" data-toggle="buttons" id="options"></div>>
-        <ul id="controlsdiv">
+      <div class="btn-group btn-group-toggle fixed-bottom" data-toggle="buttons" id="options"></div>
+        <ul>
         
         <li>
           <button id="cityBtn" type="button" class="btn" data-toggle="collapse" aria-expanded="true"
@@ -81,25 +82,29 @@
       </div>
 
     </div>
-  </div>
-  
-<select id="poiSel"class="form-select" aria-label="Default select example">
-  <option selected>Places of Interest</option>
-  <option value="archaeology">Archaeology</option>
-  <option value="theaters_and_entertainments">Theaters and Entertainment</option>
-  <option value="historic">Places of Historic Interest</option>
-  <option value="architecture">Architecture</option>
-  <option value="amusements">Amusements</option>
-  <option value="accomodations">Accomodation</option>
-  <option value="industrial_facilities">Industrial Facilities</option>
-  <option value="beaches">Beaches</option>
-  <option value="geological_formations">Geological Formations</option>
-  <option value="reigion">Places of Religious Interest</option>
-  <option value="foods">Dining</option>
-  <option value="shops">Shopping</option>
-  <option value="transport">Transport</option>
-</select>
 
+
+<div class="form-group">
+  <label for="poiSelect">Points of Interest</label>
+  <select class="form-control" name="poiSelect" id="poiSel">
+    <option disabled selected>Please select...</option>
+    <option value="accomodations">Accomodation</option>
+    <option value="amusements">Amusements</option>
+    <option value="archaeology">Archaeology</option>
+    <option value="architecture">Architecture</option>
+    <option value="beaches">Beaches</option>
+    <option value="foods">Dining</option>
+    <option value="geological_formations">Geological Formations</option>
+    <option value="industrial_facilities">Industrial Facilities</option>
+    <option value="historical_places">Places of Historic Interest</option>
+    <option value="museums">Museums</option>
+    <option value="religion">Places of Religious Interest</option>
+    <option value="shops">Shopping</option>
+    <option value="theatres_and_entertainments">Theaters </option>
+    <option value="transport">Transport</option>
+    <option value="water">Water Features</option>
+  </select>
+</div>
 
   <div class="modal" tabindex="-1" id="infoModal">
     <div class="modal-dialog modal-dialog-centered">
@@ -187,6 +192,8 @@
         </div>
       </div>
     </div>
+  </div>
+
 
     <script src="./libs/leaflet/leaflet.js"></script>
     <script src="./libs/jquery/jquery.min.js"></script>
@@ -196,7 +203,8 @@
     <script src="./libs/markercluster/leaflet.markercluster.min.js"></script>
     <!--<script src="./scripts/country.js"></script>-->
     <!-- <script src="./scripts/point-of-interest.js"></script> -->
-    <script src="./scripts/script.js"></script>
+    <!-- <script src="./scripts/countryList.js"></script> -->
+    <script src="./scripts/script.js"></script>    
 </body>
 
 </html>

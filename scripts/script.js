@@ -1,28 +1,12 @@
-//Initialise the layer groups to be populated with markers
-const poiLayer = L.layerGroup();
-const cityLayer = L.layerGroup();
-const regionLayer = L.layerGroup();
-const regionMarkers = L.markerClusterGroup({
-  iconCreateFunction: (cluster) => {
-    return L.divIcon({
-      html: `<div><span>${cluster.getChildCount()}</span></div>`,
-      className: 'region marker-cluster marker-cluster',
-      iconSize: new L.Point(40, 40),
-    });
-  },
-});
-
-const xid = "";
-
 class Country {
   constructor(name, alpha2Code, area, flag, capital, population, currency, currencySymbol) {
     this.name = name,
-      this.alpha2Code = alpha2Code,
-      this.area = area || "Not Found", this.flag = flag,
-      this.capital = capital || "Not Found",
-      this.population = population || "Not Found",
-      this.currency = currency || "Not Found",
-      this.currencySymbol = currencySymbol || ""
+    this.alpha2Code = alpha2Code,
+    this.area = area || "Not Found", this.flag = flag,
+    this.capital = capital || "Not Found",
+    this.population = population || "Not Found",
+    this.currency = currency || "Not Found",
+    this.currencySymbol = currencySymbol || ""
   }
 
 
@@ -125,78 +109,76 @@ class Country {
   };
 
 
-
-  getBoundingBox() {
-    $('#poiSel').on('change', () =>
-      $.ajax({
-        url: "php/getBoundingBox.php",
-        dataType: "json",
-        type: "POST",
-        data: {
-          countryCode: this.alpha2Code
-        }
-      }).done(result => {
-        const { north: north, south: south, east: east, west: west } = result.data[0];
-        this.getPois(north, south, east, west);
-      }).fail(() => {
-        $("#modalTitle").html("Error"),
-          $("#modalBody").html("Unfortunately there was an error fetching the poi data. Please try selecting a different country"),
-          $("#infoModal").modal()
-      })
-    )
-  };
-
-
-
-  getPois(north, south, east, west) {
-
-    poiLayer.clearLayers(),
-
-    $.ajax({
-        url: "php/getPoiData.php",
-        dataType: "json",
-        type: "POST",
-        data: { 
-          north: north, 
-          south: south, 
-          east: east, 
-          west: west,
-          kind: $('#poiSel').val() 
-      }
-          })
-          .done(result => {
-              result.data.forEach(poi => {
-          const lat = poi.point.lat;
-          const lng = poi.point.lon;
-          const newPoi = L.circleMarker([lat, lng], {
-            radius: 2,
-            color: '#031233'
-          })
-          .addTo(poiLayer);
-            const wikiLink = 'http://www.wikidata.org/wiki/' + poi.wikidata;
-            let popupContent = "<p><b>Name: </b>" + poi.name +
-            "<br><a target='_blank' href='" + wikiLink + "'><em>More Info</em></a></p>";
-             newPoi.bindPopup(popupContent);
-        
+  
+    getBoundingBox() {
+      $('#poiSel').on('change', () =>
+        $.ajax({
+          url: "php/getBoundingBox.php",
+          dataType: "json",
+          type: "POST",
+          data: {
+            countryCode: this.alpha2Code
+          }
+        }).done(result => {
+          const { north: north, south: south, east: east, west: west } = result.data[0];
+          this.getPois(north, south, east, west);
         }).fail(() => {
           $("#modalTitle").html("Error"),
             $("#modalBody").html("Unfortunately there was an error fetching the poi data. Please try selecting a different country"),
             $("#infoModal").modal()
         })
-      })
-      }
- 
+     )
+    };
+  
+  
+  
+    getPois(north, south, east, west) {
+  
+      poiLayer.clearLayers(),
+  
+      $.ajax({
+          url: "php/getPoiData.php",
+          dataType: "json",
+          type: "POST",
+          data: { 
+            north: north, 
+            south: south, 
+            east: east, 
+            west: west,
+            kind: $('#poiSel').val() 
+        }
+      }).done(result => {
+        result.data.forEach(poi => {
+            const newPoi = L.circleMarker([poi.point.lat, poi.point.lon], {
+                color: "#dc3545",
+                fillColor: "#9C1C28",
+                fillOpacity: .5,
+                radius: 2
+            }).addTo(poiLayer);
+            const wikiLink = 'http://www.wikidata.org/wiki/' + poi.wikidata;
+              const popupContent = "<p><b>Name: </b>" + poi.name +
+              "<br><a target='_blank' href='" + wikiLink + "'><em>More Info</em></a></p>";
+               newPoi.bindPopup(popupContent);
+        })
+    }).fail(() => {
+        $("#modalTitle").html("Error"),
+            $("#modalBody").html("Unfortunately there was an error fetching the earthpoi data. Please try selecting a different country"),
+            $("#infoModal").modal()
+    })
+    }
+           
+
+
+
   displayInfo() {
-    $('#flag').attr('src', this.flag);
-    $('#area').html(` ${this.area}`);
-    $('#capital').html(` ${this.capital}`);
-    $('#currency').html(` ${this.currency} (${this.currencySymbol})`);
-    $('#population').html(` ${this.population}`);
-  };
+    $("#flag").attr('src', this.flag),
+    $("#area").html(` ${this.area}`),
+    $("#capital").html(` ${this.capital}`),
+    $("#currency").html(` ${this.currency} (${this.currencySymbol})`),
+    $("#population").html(` ${this.population}`)
+  }
 
-};
-
-
+}
 
 //Create POI class with methods for displaying information about city and region markers
 
@@ -513,13 +495,28 @@ const weatherOverlays = {
 L.control.layers(baseMaps, weatherOverlays, { position: 'topright' }).addTo(map);
 
 
+//Initialise the layer groups to be populated with markers
+const poiLayer = L.layerGroup();
+const cityLayer = L.layerGroup();
+const regionLayer = L.layerGroup();
+const regionMarkers = L.markerClusterGroup({
+  iconCreateFunction: (cluster) => {
+    return L.divIcon({
+      html: `<div><span>${cluster.getChildCount()}</span></div>`,
+      className: 'region marker-cluster marker-cluster',
+      iconSize: new L.Point(40, 40),
+    });
+  },
+});
+
+
 const getCountryList = () => {
   const url = 'php/getCountryList.php';
   $.getJSON(url, (data) => {
-    $(data).each((key, value) => {
+    $(data).each((_key, value) => {
       countryList.push(value);
     });
-  });
+ });
 };
 
 //Get info for selected country
@@ -538,7 +535,6 @@ const getCountryInfo = (countryCode) => {
       c.name,
       c.alpha2Code,
       c.area,
-      c.nativeName,
       c.flag,
       c.capital,
       c.population,
@@ -635,7 +631,7 @@ const jumpToUserLocation = () => {
         };
         getCountryFromCoords(latitude, longitude);
       },
-      (error) => {
+      (_error) => {
         //If user denies location access, default to UK
         selectNewCountry('GBR', 'code');
         userCoords = {
@@ -653,7 +649,7 @@ const jumpToUserLocation = () => {
 };
 
 //Event triggered when a country is selected from the searchbar
-const handleSearchbarChange = (event, ui) => {
+const handleSearchbarChange = (_event, ui) => {
   const country = ui.item.value;
   adjustSearchBarFont(country);
   selectNewCountry(country, 'name');
@@ -746,7 +742,6 @@ $(document).ready(() => {
     map.removeLayer(cityLayer);
     map.removeLayer(regionMarkers);
     map.addLayer(poiLayer);
-    getCountryFromClick;
 
   });
 

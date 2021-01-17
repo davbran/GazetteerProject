@@ -1,6 +1,6 @@
-//Create POI class with methods for displaying information about city and Airport markers
+//Create POI class with methods for displaying information about city and region markers
 
-class PointOfInterest {
+class Features {
   constructor(latitude, longitude, geonameId, name, population, type) {
     this.latitude = latitude;
     this.longitude = longitude;
@@ -31,7 +31,7 @@ class PointOfInterest {
     this.distance = d.toFixed();
   }
 
-  //Get wikipedia article for the POI and display a short extract
+  //Get wikipedia an dphotos article for the POI and display a short extract
   getWikiDetails() {
     $.ajax({
       url: 'php/getWikiUrl.php',
@@ -75,10 +75,12 @@ class PointOfInterest {
   }
   //Add wiki details to the modal
   displayWikiDetails() {
+
     $('#modalBody').html(
-      `${this.cleanExtract}<br><a href=https://${this.wikiUrl} target="_blank">Full Wikipedia Article</a>`
-    );
+      `${this.cleanExtract}<br><a href=https://${this.wikiUrl} target="_blank">Full Article on Wikipedia</a>`);
   }
+
+
 
   //get current time at marker
   getTime() {
@@ -119,6 +121,8 @@ class PointOfInterest {
     });
   }
 
+
+
   //Add weather info to the modal
   displayWeather() {
     const forecast = [];
@@ -139,7 +143,10 @@ class PointOfInterest {
       );
       $(`#forecast${i}`).html(
         `<li>${dayOfWeek}</li><li>${day.weather[0].description
-        }</li><li>Min Temp:&nbsp;${day.temp.min.toFixed()}&#8451;</li><li>Max Temp:&nbsp;${day.temp.max.toFixed()}&#8451;</li>`
+        }</li><li>Min Temp:&nbsp;${day.temp.min.toFixed()}&#8451;
+        </li><li>Max Temp:&nbsp;${day.temp.max.toFixed()}&#8451;
+        </li><li>Humidity:&nbsp;${day.humidity}%;</li>
+        </li><li>Wind Speed:&nbsp;${Math.round(day.wind_speed * 2.237)}mph;</li>`
       );
 
       i++;
@@ -161,17 +168,19 @@ class PointOfInterest {
   }
 }
 
-class Airport extends PointOfInterest {
+
+
+class Region extends Features {
   constructor(latitude, longitude, geonameId, name) {
     super(latitude, longitude, geonameId, name);
-    this.type = 'airport';
+    this.type = 'region';
   }
   //Add general info to the modal then display it
   displayInfo() {
-  this.getTime();
+    this.getTime();
     $('#modalTitle').html(`${this.name}`);
     $('#modalInfo').html(
-      `<li>Current Time: &nbsp; ${this.time}</li><li>Latitude: &nbsp; ${this.latitude}</li><li>Longitude: &nbsp; ${this.longitude}</li><li>Distance from your location: &nbsp; ${this.distance}km</li>`
+      `<li>Current Time: &nbsp; ${this.time}</li><li>Estimated Population: &nbsp; ${this.population}</li><li>Latitude: &nbsp; ${this.latitude}</li><li>Longitude: &nbsp; ${this.longitude}</li><li>Distance from your location: &nbsp; ${this.distance}km</li>`
     );
     $('#wikiInfo').removeClass('show');
     $('#forecastInfo').removeClass('show');
@@ -179,9 +188,9 @@ class Airport extends PointOfInterest {
     $('#generalInfo').addClass('show');
     $('#infoModal').modal();
   }
-}
+};
 
-class City extends PointOfInterest {
+class City extends Features {
   constructor(latitude, longitude, geonameId, name, population, type) {
     super(latitude, longitude, geonameId, name, population, type);
   }
@@ -200,5 +209,3 @@ class City extends PointOfInterest {
     $('#infoModal').modal();
   }
 };
-
-
