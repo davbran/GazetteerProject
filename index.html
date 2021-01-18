@@ -8,7 +8,7 @@
   <meta name="description" content="Gazetteer Application with searchable map and country information">
 
   <title>Gazetteer</title>
-  <link rel="icon" type="image/png" href="images/favicon.ico" />
+  <link rel="icon" type="image/png" href="images/favicon.ico.png" />
 
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500&family=Libre+Franklin:wght@200&display=swap"
     rel="stylesheet">
@@ -46,11 +46,12 @@
       <span>Country Statistics</span>
     </button>
     <ul class="collapse navbar-collapse text-warning list-unstyled" id="details">
-      <li><img id="flag" class="info" /></li>
+      
       <li class="info">Capital:&nbsp;<span id="capital"></span></li>
-      <li class="info">Area(km<sup>2</sup>):&nbsp;<span id="area"></span></li>
       <li class="info">Population:&nbsp;<span id="population"></span></li>
+      <li class="info">Area(km<sup>2</sup>):&nbsp;<span id="area"></span></li>
       <li class="info">Currency:&nbsp;<span id="currency"></span></li>
+      <li><img id="flag" class="info" /></li>
     </ul>
   </div>
 
@@ -87,7 +88,7 @@
 <div class="form-group">
   <label for="poiSelect">Points of Interest</label>
   <select class="form-control" name="poiSelect" id="poiSel">
-    <option disabled selected>Please select...</option>
+    <option disabled selected="selected">Please select...</option>
     <option value="accomodations">Accomodation</option>
     <option value="amusements">Amusements</option>
     <option value="archaeology">Archaeology</option>
@@ -193,6 +194,23 @@
       </div>
     </div>
   </div>
+  
+<div class="modal" tabindex="-1" id="poiInfoModal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-secondary">
+        <h5 class="modal-title bg-secondary text-warning" id="poiModalTitle"></h5>
+        <br />
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-secondary text-warning" id="poiModalBody"></div>
+    </div>
+  </div>
+</div>
+
+          
 
 
     <script src="./libs/leaflet/leaflet.js"></script>

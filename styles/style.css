@@ -120,18 +120,34 @@ body {
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), 0 2px 2px rgba(0, 0, 0, 0.19);
   border-bottom: solid 2px #d8d8d8;
 }
-/* .btn .fa {
-  display: flex;
-  position: relative;
-  content: '';
-  line-height: 5rem;
-  font-size: 1.8rem;
-  color: #ffc107;
-} */
+ .modal-content .btn .fa {
+  
+    display: contents;
+    line-height: -3rem;
+    font-size: 2rem;
+    color: #ffc107;
+    position: absolute;
+    flex-flow: row;
+    /* position: absolute; */
+    /* display: contents; */
+
+} 
+
+.modal-content .btn {
+	background-color: #6c757d;
+	/* display: table-row-group; */
+	/* position: inherit; */
+	flex: max-content;
+}
 
 li .btn {
   z-index: 499;
   position: relative;
+}
+
+.poiPopup {
+  width: 100px;
+  height: 300px;
 }
 
 

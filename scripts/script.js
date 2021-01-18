@@ -1,14 +1,13 @@
 class Country {
   constructor(name, alpha2Code, area, flag, capital, population, currency, currencySymbol) {
     this.name = name,
-    this.alpha2Code = alpha2Code,
-    this.area = area || "Not Found", this.flag = flag,
-    this.capital = capital || "Not Found",
-    this.population = population || "Not Found",
-    this.currency = currency || "Not Found",
-    this.currencySymbol = currencySymbol || ""
+      this.alpha2Code = alpha2Code,
+      this.area = area || "Not Found", this.flag = flag,
+      this.capital = capital || "Not Found",
+      this.population = population || "Not Found",
+      this.currency = currency || "Not Found",
+      this.currencySymbol = currencySymbol || ""
   }
-
 
   getCities() {
     cityLayer.clearLayers(),
@@ -24,7 +23,7 @@ class Country {
         const marker = L.ExtraMarkers.icon({
           icon: " fa-map-pin",
           markerColor: "#BBDEF0",
-          shape: "square",
+          shape: "circle",
           svg: !0,
           prefix: "fa"
         }),
@@ -85,7 +84,7 @@ class Country {
         const marker = L.ExtraMarkers.icon({
           icon: "fa-map-pin",
           markerColor: "#AFD5AA",
-          shape: "penta",
+          shape: "circle",
           svg: !0,
           prefix: "fa"
         });
@@ -108,79 +107,101 @@ class Country {
       })
   };
 
-
-  
-    getBoundingBox() {
-      $('#poiSel').on('change', () =>
-        $.ajax({
-          url: "php/getBoundingBox.php",
-          dataType: "json",
-          type: "POST",
-          data: {
-            countryCode: this.alpha2Code
-          }
-        }).done(result => {
-          const { north: north, south: south, east: east, west: west } = result.data[0];
-          this.getPois(north, south, east, west);
-        }).fail(() => {
-          $("#modalTitle").html("Error"),
-            $("#modalBody").html("Unfortunately there was an error fetching the poi data. Please try selecting a different country"),
-            $("#infoModal").modal()
-        })
-     )
-    };
-  
-  
-  
-    getPois(north, south, east, west) {
-  
+  getBoundingBox() {
+    $('#poiSel').on('change', () =>
       poiLayer.clearLayers(),
-  
       $.ajax({
-          url: "php/getPoiData.php",
-          dataType: "json",
-          type: "POST",
-          data: { 
-            north: north, 
-            south: south, 
-            east: east, 
-            west: west,
-            kind: $('#poiSel').val() 
+        url: "php/getBoundingBox.php",
+        dataType: "json",
+        type: "POST",
+        data: {
+          countryCode: this.alpha2Code
+        }
+      }).done(result => {
+        const { north: north, south: south, east: east, west: west } = result.data[0];
+        this.getPois(north, south, east, west);
+      }).fail(() => {
+        $("#modalTitle").html("Error"),
+          $("#modalBody").html("Unfortunately there was an error fetching the poi data. Please try selecting a different country"),
+          $("#infoModal").modal()
+      })
+    )
+  };
+
+  getPois(north, south, east, west) {
+    //poiLayer.clearLayers(),
+      $.ajax({
+        url: "php/getPoiData.php",
+        dataType: "json",
+        type: "POST",
+        data: {
+          north: north,
+          south: south,
+          east: east,
+          west: west,
+          kind: $('#poiSel').val()
         }
       }).done(result => {
         result.data.forEach(poi => {
-            const newPoi = L.circleMarker([poi.point.lat, poi.point.lon], {
-                color: "#dc3545",
-                fillColor: "#9C1C28",
-                fillOpacity: .5,
-                radius: 2
-            }).addTo(poiLayer);
-            const wikiLink = 'http://www.wikidata.org/wiki/' + poi.wikidata;
-              const popupContent = "<p><b>Name: </b>" + poi.name +
-              "<br><a target='_blank' href='" + wikiLink + "'><em>More Info</em></a></p>";
-               newPoi.bindPopup(popupContent);
+          const newPoi = L.circleMarker([poi.point.lat, poi.point.lon],
+            {
+              radius: 5,
+              color: '#874831',
+              fillOpacity: 0.5,
+            })
+            .addTo(poiLayer)
+          newPoi.on('click', () => {
+
+            $.ajax({
+              url: "php/getXidData.php",
+              dataType: "json",
+              type: "POST",
+              data: {
+                xid: poi.xid,
+              }
+
+            }).done(result => {
+              const data = result['data'];
+              const wikiLink = data.wikipedia;
+              const image = data.preview.source;
+
+              $("#poiModalTitle").html(data.name),
+                $("#poiModalBody").html("<img src='" + image + "' alt='" + data.name + "'>" +
+                  "</br>" + data.wikipedia_extracts.html +
+                  "</br><a target='_blank' href='" + wikiLink + "'><em>More Info on Wikipedia</em></a></p>");
+              $("#poiInfoModal").modal()
+
+
+            }).fail(() => {
+              $("#poiModalTitle").html("Error"),
+                $("#poiModalBody").html("Unfortunately there was an error fetching the earthpoi data. Please try selecting a different country"),
+                $("#poiInfoModal").modal()
+            })
+          }
+          )
         })
-    }).fail(() => {
-        $("#modalTitle").html("Error"),
-            $("#modalBody").html("Unfortunately there was an error fetching the earthpoi data. Please try selecting a different country"),
-            $("#infoModal").modal()
-    })
-    }
-           
+      })
+  }
+
+
+
 
 
 
   displayInfo() {
     $("#flag").attr('src', this.flag),
-    $("#area").html(` ${this.area}`),
-    $("#capital").html(` ${this.capital}`),
-    $("#currency").html(` ${this.currency} (${this.currencySymbol})`),
-    $("#population").html(` ${this.population}`)
+      $("#area").html(` ${this.area}`),
+      $("#capital").html(` ${this.capital}`),
+      $("#currency").html(` ${this.currency} (${this.currencySymbol})`),
+      $("#population").html(` ${this.population}`)
   }
+
+
+
 
 }
 
-//Create POI class with methods for displaying information about city and region markers
+
 
 class Features {
   constructor(latitude, longitude, geonameId, name, population, type) {
@@ -192,12 +213,12 @@ class Features {
     this.type = type;
   }
 
-  //Degrees to radians for getDistancefromLatLon
+
   deg2rad(deg) {
     return deg * (Math.PI / 180);
   }
 
-  //Calculate distance based on coordinates
+
   getDistanceFromLatLonInKm(lat1, lon1) {
     const R = 6371; // Radius of the earth in km
     const dLat = this.deg2rad(this.latitude - lat1);
@@ -209,11 +230,11 @@ class Features {
       Math.sin(dLon / 2) *
       Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const d = R * c; // Distance in km
+    const d = R * c;
     this.distance = d.toFixed();
   }
 
-  //Get wikipedia an dphotos article for the POI and display a short extract
+
   getWikiDetails() {
     $.ajax({
       url: 'php/getWikiUrl.php',
@@ -240,7 +261,7 @@ class Features {
           .done((result) => {
             const data = Object.values(result['data'])[0];
             const extract = data['extract'];
-            //Extracts have '(listen)' where the wikipedia sound button would be, remove it
+
             const regex = /\(listen\)/;
             this.cleanExtract = extract.replace(regex, '');
             this.displayWikiDetails();
@@ -255,7 +276,7 @@ class Features {
         this.wikiFailure();
       });
   }
-  //Add wiki details to the modal
+
   displayWikiDetails() {
 
     $('#modalBody').html(
@@ -264,25 +285,25 @@ class Features {
 
 
 
-  //get current time at marker
+
   getTime() {
     const date = new Date();
 
     this.time = date.toLocaleString('en-GB', {
-      //Pass in the timezone to get the proper time for the coordinates
+
       timeZone: this.timeZone,
       timeStyle: 'short',
     });
   }
 
-  //If no article is found
+
   wikiFailure() {
     $('#modalBody').html(
       `No wikipedia article could be found for this ${this.type}.`
     );
   }
 
-  //Get current weather & forecast. Also get current time included in json
+
   getWeatherInfo() {
     $.ajax({
       url: 'php/getWeatherForecast.php',
@@ -305,15 +326,13 @@ class Features {
 
 
 
-  //Add weather info to the modal
   displayWeather() {
-    // const forecast = [];
-    //Set up a counter to be used to set up index of forecast array
+
     let i = 0;
     this.dailyWeather.forEach((day) => {
-      //dt is in seconds so it needs to be converted to milliseconds
+
       const date = new Date(day.dt * 1000);
-      //Make sure the correct day is displayed for the timezone
+
       const dayOfWeek = date.toLocaleString('en-GB', {
         timeZone: this.timeZone,
         weekday: 'long',
@@ -334,7 +353,7 @@ class Features {
       i++;
     });
 
-    //Display current weather info for location
+
     $('#weatherImage').attr(
       'src',
       `https://openweathermap.org/img/wn/${this.currentWeather.icon}@2x.png`
@@ -357,7 +376,7 @@ class Region extends Features {
     super(latitude, longitude, geonameId, name);
     this.type = 'region';
   }
-  //Add general info to the modal then display it
+
   displayInfo() {
     this.getTime();
     $('#modalTitle').html(`${this.name}`);
@@ -393,13 +412,13 @@ class City extends Features {
 };
 
 
-//Global variables to store the users coordinates, coutries for the autoselect, and polygon of current country
+
 let userCoords = {};
 const countryList = [];
 let countryOutline;
 
 
-//Set details for different map displays
+
 const dark = L.tileLayer(
   'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
   {
@@ -495,7 +514,7 @@ const weatherOverlays = {
 L.control.layers(baseMaps, weatherOverlays, { position: 'topright' }).addTo(map);
 
 
-//Initialise the layer groups to be populated with markers
+
 const poiLayer = L.layerGroup();
 const cityLayer = L.layerGroup();
 const regionLayer = L.layerGroup();
@@ -516,10 +535,10 @@ const getCountryList = () => {
     $(data).each((_key, value) => {
       countryList.push(value);
     });
- });
+  });
 };
 
-//Get info for selected country
+
 const getCountryInfo = (countryCode) => {
   $.ajax({
     url: 'php/getCountryInfo.php',
@@ -530,7 +549,7 @@ const getCountryInfo = (countryCode) => {
     },
   }).done((result) => {
     const c = result.data;
-    //Use the returned info to create new Country class
+
     const activeCountry = new Country(
       c.name,
       c.alpha2Code,
@@ -541,7 +560,7 @@ const getCountryInfo = (countryCode) => {
       c.currencies[0].name,
       c.currencies[0].symbol
     );
-    //Display info and fetch & create markers for the cities, regions, and pois
+
     activeCountry.displayInfo();
     activeCountry.getCities();
     activeCountry.getRegions();
@@ -549,9 +568,6 @@ const getCountryInfo = (countryCode) => {
   });
 };
 
-//Handle selection of a new country
-//The PHP routines will search the json file by either name or 3-letter code depending on the action that triggered it
-//Autocomplete is populated by the json file so the names will always be a match, but other sources names may differ slightly so the code is preferred
 const selectNewCountry = (country, type) => {
   const start = Date.now();
 
@@ -566,7 +582,7 @@ const selectNewCountry = (country, type) => {
   })
     .done((result) => {
       const countryCode = result['properties']['ISO_A3'];
-      //If a polygon is already drawn, clear it
+
       if (countryOutline) {
         countryOutline.clearLayers();
       }
@@ -586,7 +602,7 @@ const selectNewCountry = (country, type) => {
     });
 };
 
-//Use the users coordinates to get the name of their country
+
 const getCountryFromCoords = (latitude, longitude) => {
   $.ajax({
     url: 'php/getCountryFromCoords.php',
@@ -600,7 +616,7 @@ const getCountryFromCoords = (latitude, longitude) => {
     .done((result) => {
       const data = result.data[0].components;
       const alpha3Code = data['ISO_3166-1_alpha-3'];
-      //Only change value if a country was found for the location otherwise searchbar empties when ocean is clicked
+
       if (data.country) {
         $('#countrySearch').val(data.country);
         adjustSearchBarFont(data.country);
@@ -616,15 +632,15 @@ const getCountryFromCoords = (latitude, longitude) => {
     });
 };
 
-//Find the user location and uses it to locate country on the map
+
 const jumpToUserLocation = () => {
-  //Check to see if user's browser supports navigator, although if it doesn't user probably has bigger issues than my app not working
+
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        //Save the lat & long and pass it to the function to get the country
+
         const { longitude, latitude } = position.coords;
-        //Store the coords in a global to be used later to calculate distances
+
         userCoords = {
           longitude: longitude,
           latitude: latitude,
@@ -632,7 +648,7 @@ const jumpToUserLocation = () => {
         getCountryFromCoords(latitude, longitude);
       },
       (_error) => {
-        //If user denies location access, default to UK
+
         selectNewCountry('GBR', 'code');
         userCoords = {
           longitude: -0.118092,
@@ -648,14 +664,14 @@ const jumpToUserLocation = () => {
   }
 };
 
-//Event triggered when a country is selected from the searchbar
-const handleSearchbarChange = (_event, ui) => {
+
+const handleSearchbarChange = (event, ui) => {
   const country = ui.item.value;
   adjustSearchBarFont(country);
   selectNewCountry(country, 'name');
 };
 
-//Adjust font height to make sure country name fits the searchbar
+
 const adjustSearchBarFont = (country) => {
   if (country.length > 25) {
     $('#countrySearch').css('font-size', '0.6em');
@@ -666,13 +682,13 @@ const adjustSearchBarFont = (country) => {
   }
 };
 
-//Handle map click
+
 const getCountryFromClick = (event) => {
   const { lat, lng } = event.latlng;
   getCountryFromCoords(lat, lng);
 };
 
-//Associate the autocomplete field with the list of countries and set the function to be triggered when a country is selected
+
 $('#countrySearch').autocomplete({
   source: countryList,
   minLength: 0,
@@ -680,7 +696,7 @@ $('#countrySearch').autocomplete({
   position: { my: 'top', at: 'bottom', of: '#countrySearch' },
 });
 
-//Create a pop up when a regionmarker is clicked
+
 const infoPopup = (event) => {
   let marker;
   const markerDetails = event.target.options;
@@ -703,15 +719,15 @@ const infoPopup = (event) => {
       markerDetails.type
     );
   }
-  //Get distance between marker and user
+
   marker.getDistanceFromLatLonInKm(userCoords.latitude, userCoords.longitude);
   marker.getWikiDetails();
   marker.getWeatherInfo();
 };
 
-//Remove Loading Screen
+
 const removeLoader = () => {
-  //Check if a country has been loaded, if so then remove loading screen. Otherwise keep checking at short intervals until it has.
+
   if (countryOutline) {
     $('#preloader')
       .delay(100)
@@ -723,19 +739,19 @@ const removeLoader = () => {
 };
 let checkInterval = setInterval(removeLoader, 50);
 
-//When HTML is rendered...
+
 $(document).ready(() => {
   jumpToUserLocation();
 
   removeLoader();
 
-  //Populate list of countries
+
   getCountryList();
 
-  //Clear the searchbar of text when it is clicked for a smoother experience
+
   $('#countrySearch').click(() => $('#countrySearch').val(''));
 
-  //Change country based on map click
+
   map.on('click', getCountryFromClick);
 
   $('#poiSel').change(() => {
