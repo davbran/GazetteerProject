@@ -10,8 +10,7 @@
   <title>Gazetteer</title>
   <link rel="icon" type="image/png" href="images/favicon.ico.png" />
 
-  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500&family=Libre+Franklin:wght@200&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="./libs/bootstrap/css/bootstrap.min.css" />
   <link rel="stylesheet" href="./styles/style.css" />
@@ -19,6 +18,7 @@
   <link rel="stylesheet" href="./libs/jqueryui/jquery-ui.min.css" />
   <link rel="stylesheet" href="./libs/fontawesome/fontawesome.min.css" />
   <link rel="stylesheet" href="./libs/fontawesome/solid.min.css" />
+  <link rel="stylesheet" href="./libs/fontawesome/all.min.css" />
   <link rel="stylesheet" href="./libs/leaflet-extra-markers/leaflet.extra-markers.min.css" />
   <link rel="stylesheet" href="./libs/markercluster/MarkerCluster.css" />
 
@@ -35,39 +35,54 @@
       <strong>Map Initialising</strong>
       <div class="spinner-grow text-warning" role="status" aria-hidden="true"></div>
     </div>
-    
+
   </div>
 
-<div class="navbar bg-secondary navbar-light navbar-fixed-top">
+  <div class="navbar bg-secondary navbar-light navbar-fixed-top">
+    <img src="./images/logo.png" id="logo" />
+    <div class="btn-group">
+      <button class="btn btn-warning" type="button" data-toggle="collapse" data-target="#details" id="detailButton">
+        <i class="fa fa-globe"></i>
+        <span>Country Statistics</span>
+      </button>
 
-  <img src="./images/logo.png" id="logo" />
-  <div class="options">
-    <button class="btn btn-warning" type="button" data-toggle="collapse" data-target="#details" id="detailButton">
-      <i class="fa fa-globe"></i>
-      <span>Country Statistics</span>
-    </button>
+      <button id="regionBtn" type="button" class="btn btn-warning" data-toggle="collapse" aria-expanded="true"
+        aria-controls="collapseExample">
+        <i class="fa fa-map"></i>
+        <span id="infoText">Regional</span>
+      </button>
 
-    <button id="regionBtn" type="button" class="btn btn-warning" data-toggle="collapse" aria-expanded="true"
-      aria-controls="collapseExample">
-      <i class="fa fa-map"></i>
-      <span id="infoText">Regional</span>
-    </button>
+      <button id="cityBtn" type="button" class="btn btn-warning">
+        <i class="fa fa-city"></i>
+        <span id="infoText">Cities</span>
+      </button>
+    </div>
 
-    <button id="cityBtn" type="button" class="btn btn-warning">
-      <i class="fa fa-city"></i>
-      <span id="infoText">Cities</span>
-    </button>
-  </div>
-    
-    <ul class="collapse navbar-collapse text-warning list-unstyled" id="details">
-      <li class="info">Capital:&nbsp;<span id="capital"></span></li>
-      <li class="info">Population:&nbsp;<span id="population"></span></li>
-      <li class="info">Area(km<sup>2</sup>):&nbsp;<span id="area"></span></li>
-      <li class="info">Currency:&nbsp;<span id="currency"></span></li>
-      <li><img id="flag" class="info" /></li>
-    </ul>
-  </div>
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <label class="input-group-text bg-warning" for="poiSel"><i class="fas fa-map-marker-alt"></i>Points of Interest</label>
+      </div>
+      
+      <select class="custom-select" id="poiSel">
+        <option value="architecture">Architecture</option>
+        <option value="cultural">Cultural</option>
+        <option value="historic">Historical</option>
+        <option value="natural">Natural</option>
+        <option value="sport">Sporting Interest/Facilities</option>
+        <option value="tourist_facilities">Tourist Facilities</option>
+      </select>
 
+    </div>
+  
+  <ul class="collapse navbar-collapse text-warning list-unstyled" id="details">
+    <li class="info">Capital:&nbsp;<span id="capital"></span></li>
+    <li class="info">Population:&nbsp;<span id="population"></span></li>
+    <li class="info">Area(km<sup>2</sup>):&nbsp;<span id="area"></span></li>
+    <li class="info">Currency:&nbsp;<span id="currency"></span></li>
+    <li><img id="flag" class="info" /></li>
+  </ul>
+  
+</div>
   <div id="search">
     <input type="type" id="countrySearch" placeholder="Search..." class="bg-light text-center border-dark" />
   </div>
@@ -76,24 +91,10 @@
     <div class="row bg-light" id="map"></div>
   </div>
 
-<footer>
-  <div class="input-group mb-3">
-    <div class="input-group-prepend">
-      <label class="input-group-text bg-warning" for="poiSel">Points of Interest</label>
-    </div>
-    <select class="custom-select" id="poiSel">
-      <option selected="selected" value="">Please select...</option>
-      <option value="architecture">Architecture</option>
-      <option value="cultural">Cultural</option>
-      <option value="historic">Historical</option>
-      <option value="natural">Natural</option>
-      <option value="sport">Sporting Interest/Facilities</option> 
-      <option value="tourist_facilities">Tourist Facilities</option>
-    </select>
-    
-  </div>
-</footer>
 
+
+    <a id="gitBtn" href="https://github.com/davbran/GazetteerProject" target="_blank"><i class="fab fa-github-square">GitHub</i></a>
+  
   <div class="modal" tabindex="-1" id="infoModal">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -102,7 +103,7 @@
           <br />
 
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">X</span>
+            <span aria-hidden="true">&times</span>
           </button>
         </div>
         <div class="accordion" id="infoAccordion">
@@ -155,22 +156,22 @@
 
         </div>
         <div class="modal-footer bg-secondary">
-          <button type="button" class="btn btn-warning" data-target="#generalInfo" data-toggle="collapse" aria-expanded="true"
-            aria-controls="collapseExample">
+          <button type="button" class="btn btn-warning" data-target="#generalInfo" data-toggle="collapse"
+            aria-expanded="true" aria-controls="collapseExample">
             <i class="fa fa-info"></i>
           </button>
-          <button type="button" class="btn btn-warning" data-target="#wikiInfo" data-toggle="collapse" aria-expanded="false"
-            aria-controls="collapseExample">
-            <i class="fa" style="font-family: 'EB Garamond', serif;"> W </i>
+          <button type="button" class="btn btn-warning" data-target="#wikiInfo" data-toggle="collapse"
+            aria-expanded="false" aria-controls="collapseExample">
+            <i class="fab fa-wikipedia-w"></i>
 
           </button>
-          <button type="button" class="btn btn-warning" data-target="#weatherInfo" data-toggle="collapse" aria-expanded="false"
-            aria-controls="collapseExample">
+          <button type="button" class="btn btn-warning" data-target="#weatherInfo" data-toggle="collapse"
+            aria-expanded="false" aria-controls="collapseExample">
             <i class="fa fa-cloud-sun"></i>
 
           </button>
-          <button type="button" class="btn btn-warning" data-target="#forecastInfo" data-toggle="collapse" aria-expanded="false"
-            aria-controls="collapseExample">
+          <button type="button" class="btn btn-warning" data-target="#forecastInfo" data-toggle="collapse"
+            aria-expanded="false" aria-controls="collapseExample">
             <i class="fa fa-cloud-sun"><sub>+5</sub></i>
 
           </button>
@@ -182,31 +183,30 @@
     </div>
   </div>
 
-<div class="modal" tabindex="-1" id="poiInfoModal">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header bg-secondary">
-        <h5 class="modal-title bg-secondary text-warning" id="poiModalHeader"></h5>
-        <br />
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+  <div class="modal" tabindex="-1" id="poiInfoModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-secondary">
+          <h5 class="modal-title bg-secondary text-warning" id="poiModalHeader"></h5>
+          <br />
+          
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body bg-secondary text-warning" id="poiModalBody"></div>
       </div>
-      <div class="modal-body bg-secondary text-warning" id="poiModalBody"></div>
     </div>
   </div>
-</div>
 
-          
+  <script src="./libs/leaflet/leaflet.js"></script>
+  <script src="./libs/jquery/jquery.min.js"></script>
+  <script src="./libs/jqueryui/jquery-ui.min.js"></script>
+  <script src="./libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="./libs/leaflet-extra-markers/leaflet.extra-markers.min.js"></script>
+  <script src="./libs/markercluster/leaflet.markercluster.min.js"></script>
+  <script src="./scripts/script.js"></script>
 
-
-    <script src="./libs/leaflet/leaflet.js"></script>
-    <script src="./libs/jquery/jquery.min.js"></script>
-    <script src="./libs/jqueryui/jquery-ui.min.js"></script>
-    <script src="./libs/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="./libs/leaflet-extra-markers/leaflet.extra-markers.min.js"></script>
-    <script src="./libs/markercluster/leaflet.markercluster.min.js"></script>
-    <script src="./scripts/script.js"></script>    
 </body>
 
 </html>
