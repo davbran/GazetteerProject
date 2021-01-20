@@ -2,11 +2,12 @@ class Country {
   constructor(name, alpha2Code, area, flag, capital, population, currency, currencySymbol) {
     this.name = name,
       this.alpha2Code = alpha2Code,
-      this.area = area || "Not Found", this.flag = flag,
+      this.area = area || "Not Found",
       this.capital = capital || "Not Found",
       this.population = population || "Not Found",
       this.currency = currency || "Not Found",
-      this.currencySymbol = currencySymbol || ""
+      this.currencySymbol = currencySymbol || "",
+      this.flag = flag
   }
 
   getCities() {
@@ -64,9 +65,9 @@ class Country {
           }
         })
       }).fail(() => {
-        $("#modalTitle").html("Error"),
-          $("#modalBody").html("Unfortunately there was an error fetching city information. Please try again or select a different country."),
-          $("#infoModal").modal()
+        $("#modalHeader").html("Error"),
+        $("#modalBody").html("Error fetching city information. Please try again or select a different country."),
+        $("#infoModal").modal()
       })
   }
 
@@ -101,35 +102,39 @@ class Country {
         }),
           regionMarkers.addLayer(regionLayer)
       }).fail(() => {
-        $("#modalTitle").html("Error"),
-          $("#infoAccordion").html("Unfortunately there was an error fetching the region data. Please try selecting a different country"),
-          $("#infoModal").modal()
+        $("#modalHeader").html("Error"),
+        $("#infoAccordion").html("Error fetching the region data. Please try selecting a different country"),
+        $("#infoModal").modal()
       })
   };
+
 
   getBoundingBox() {
-    $('#poiSel').on('change', () =>
-      poiLayer.clearLayers(),
-      $.ajax({
-        url: "php/getBoundingBox.php",
-        dataType: "json",
-        type: "POST",
-        data: {
-          countryCode: this.alpha2Code
-        }
-      }).done(result => {
-        const { north: north, south: south, east: east, west: west } = result.data[0];
-        this.getPois(north, south, east, west);
-      }).fail(() => {
-        $("#modalTitle").html("Error"),
-          $("#modalBody").html("Unfortunately there was an error fetching the poi data. Please try selecting a different country"),
-          $("#infoModal").modal()
-      })
-    )
+    $.ajax({
+      url: "php/getBoundingBox.php",
+      dataType: "json",
+      type: "POST",
+      data: {
+        countryCode: this.alpha2Code
+      }
+    }).done(result => {
+      const { 
+        north: north, 
+        south: south, 
+        east: east, 
+        west: west } = result.data[0];
+      this.getPois(north, south, east, west);
+    }).fail(() => {
+      $("#modalHeader").html("Error"),
+      $("#modalBody").html("Error fetching the poi data. Please try selecting a different country"),
+      $("#infoModal").modal()
+    })
+
   };
 
-  getPois(north, south, east, west) {
-    //poiLayer.clearLayers(),
+
+    getPois(north, south, east, west) {
+      poiLayer.clearLayers(),
       $.ajax({
         url: "php/getPoiData.php",
         dataType: "json",
@@ -149,9 +154,9 @@ class Country {
               color: '#874831',
               fillOpacity: 0.5,
             })
-            .addTo(poiLayer)
-          newPoi.on('click', () => {
-
+            .addTo(poiLayer);
+            
+            newPoi.on('click', () => {
             $.ajax({
               url: "php/getXidData.php",
               dataType: "json",
@@ -165,24 +170,23 @@ class Country {
               const wikiLink = data.wikipedia;
               const image = data.preview.source;
 
-              $("#poiModalTitle").html(data.name),
-                $("#poiModalBody").html("<img src='" + image + "' alt='" + data.name + "'>" +
+              $("#poiModalHeader").html(data.name),
+              $("#poiModalBody").html("<img src='" + image + "' alt='" + data.name + "'>" +
                   "</br>" + data.wikipedia_extracts.html +
-                  "</br><a target='_blank' href='" + wikiLink + "'><em>More Info on Wikipedia</em></a></p>");
+                  "</br><button class='btn btn-warning'><a target='_blank' href='" + wikiLink + "'><em>More Info on Wikipedia</em></a></button</p>");
               $("#poiInfoModal").modal()
 
 
             }).fail(() => {
-              $("#poiModalTitle").html("Error"),
-                $("#poiModalBody").html("Unfortunately there was an error fetching the earthpoi data. Please try selecting a different country"),
+              $("#poiModalHeader").html("Error"),
+                $("#poiModalBody").html("Error fetching the poi data. Please try selecting a different country"),
                 $("#poiInfoModal").modal()
             })
-          }
-          )
+            }
+            )
         })
       })
-  }
-
+ }
 
 
 
@@ -211,27 +215,6 @@ class Features {
     this.name = name;
     this.population = population;
     this.type = type;
-  }
-
-
-  deg2rad(deg) {
-    return deg * (Math.PI / 180);
-  }
-
-
-  getDistanceFromLatLonInKm(lat1, lon1) {
-    const R = 6371; // Radius of the earth in km
-    const dLat = this.deg2rad(this.latitude - lat1);
-    const dLon = this.deg2rad(this.longitude - lon1);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(this.deg2rad(lat1)) *
-      Math.cos(this.deg2rad(this.latitude)) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const d = R * c;
-    this.distance = d.toFixed();
   }
 
 
@@ -379,9 +362,9 @@ class Region extends Features {
 
   displayInfo() {
     this.getTime();
-    $('#modalTitle').html(`${this.name}`);
+    $('#modalHeader').html(`${this.name}`);
     $('#modalInfo').html(
-      `<li>Current Time: &nbsp; ${this.time}</li><li>Estimated Population: &nbsp; ${this.population}</li><li>Latitude: &nbsp; ${this.latitude}</li><li>Longitude: &nbsp; ${this.longitude}</li><li>Distance from your location: &nbsp; ${this.distance}km</li>`
+      `<li>Current Time: &nbsp; ${this.time}</li><li>Estimated Population: &nbsp; ${this.population}</li><li>Latitude: &nbsp; ${this.latitude}</li><li>Longitude: &nbsp; ${this.longitude}</li>`
     );
     $('#wikiInfo').removeClass('show');
     $('#forecastInfo').removeClass('show');
@@ -398,10 +381,10 @@ class City extends Features {
 
   displayInfo() {
     this.getTime();
-    $('#modalTitle').html(`${this.name}`);
+    $('#modalHeader').html(`${this.name}`);
     $('#modalInfo').html(
       `<li>Current Time: &nbsp; ${this.time}</li><li>Estimated Population: &nbsp; ${this.population}</li>
-      <li>Latitude: &nbsp; ${this.latitude}</li><li>Longitude: &nbsp; ${this.longitude}</li><li>Distance from your location: &nbsp; ${this.distance}km</li>`
+      <li>Latitude: &nbsp; ${this.latitude}</li><li>Longitude: &nbsp; ${this.longitude}</li>`
     );
     $('#wikiInfo').removeClass('show');
     $('#forecastInfo').removeClass('show');
@@ -413,9 +396,9 @@ class City extends Features {
 
 
 
-let userCoords = {};
+let userCoordinates = {};
 const countryList = [];
-let countryOutline;
+let countryBorder;
 
 
 
@@ -447,7 +430,7 @@ const light = L.tileLayer(
   }
 );
 
-const topographicmap = L.tileLayer(
+const topoMap = L.tileLayer(
   'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
   {
     id: 'mapbox.streets',
@@ -499,7 +482,7 @@ new L.Control.Zoom({ position: 'topright' }).addTo(map);
 const baseMaps = {
   Light: light,
   Dark: dark,
-  Topographic: topographicmap,
+  Topographic: topoMap,
   Satellite: satellite,
   'Earth At Night': earthAtNight,
 };
@@ -550,7 +533,7 @@ const getCountryInfo = (countryCode) => {
   }).done((result) => {
     const c = result.data;
 
-    const activeCountry = new Country(
+  const activeCountry = new Country(
       c.name,
       c.alpha2Code,
       c.area,
@@ -569,7 +552,6 @@ const getCountryInfo = (countryCode) => {
 };
 
 const selectNewCountry = (country, type) => {
-  const start = Date.now();
 
   $.ajax({
     url: 'php/getPolygon.php',
@@ -583,25 +565,23 @@ const selectNewCountry = (country, type) => {
     .done((result) => {
       const countryCode = result['properties']['ISO_A3'];
 
-      if (countryOutline) {
-        countryOutline.clearLayers();
+      if (countryBorder) {
+        countryBorder.clearLayers();
       }
-      countryOutline = L.geoJSON(result, {
+      countryBorder = L.geoJSON(result, {
         style: {
           color: '#ffc107'
           ,
         },
       }).addTo(map);
-      map.fitBounds(countryOutline.getBounds());
+      map.fitBounds(countryBorder.getBounds());
       getCountryInfo(countryCode);
 
-      console.log(Date.now() - start);
     })
     .fail(() => {
       console.log('Error in selectNewCountry');
     });
 };
-
 
 const getCountryFromCoords = (latitude, longitude) => {
   $.ajax({
@@ -624,14 +604,13 @@ const getCountryFromCoords = (latitude, longitude) => {
       }
     })
     .fail(() => {
-      $('#modalTitle').html(`Error`);
+      $('#modalHeader').html(`Error`);
       $('#modalBody').html(
-        'Unfortunately there was an error finding a country for these coordinates. Please try a different location'
+        'Error finding a country for these coordinates. Please try a different location'
       );
       $('#infoModal').modal();
     });
 };
-
 
 const jumpToUserLocation = () => {
 
@@ -641,7 +620,7 @@ const jumpToUserLocation = () => {
 
         const { longitude, latitude } = position.coords;
 
-        userCoords = {
+        userCoordinates = {
           longitude: longitude,
           latitude: latitude,
         };
@@ -650,7 +629,7 @@ const jumpToUserLocation = () => {
       (_error) => {
 
         selectNewCountry('GBR', 'code');
-        userCoords = {
+        userCoordinates = {
           longitude: -0.118092,
           latitude: 51.509865,
         };
@@ -670,7 +649,6 @@ const handleSearchbarChange = (event, ui) => {
   adjustSearchBarFont(country);
   selectNewCountry(country, 'name');
 };
-
 
 const adjustSearchBarFont = (country) => {
   if (country.length > 25) {
@@ -720,15 +698,12 @@ const infoPopup = (event) => {
     );
   }
 
-  marker.getDistanceFromLatLonInKm(userCoords.latitude, userCoords.longitude);
   marker.getWikiDetails();
   marker.getWeatherInfo();
 };
 
-
 const removeLoader = () => {
-
-  if (countryOutline) {
+  if (countryBorder) {
     $('#preloader')
       .delay(100)
       .fadeOut('slow', () => {
@@ -737,20 +712,17 @@ const removeLoader = () => {
     clearInterval(checkInterval);
   }
 };
-let checkInterval = setInterval(removeLoader, 50);
 
+let checkInterval = setInterval(removeLoader, 50);
 
 $(document).ready(() => {
   jumpToUserLocation();
 
   removeLoader();
 
-
   getCountryList();
 
-
   $('#countrySearch').click(() => $('#countrySearch').val(''));
-
 
   map.on('click', getCountryFromClick);
 
@@ -758,7 +730,6 @@ $(document).ready(() => {
     map.removeLayer(cityLayer);
     map.removeLayer(regionMarkers);
     map.addLayer(poiLayer);
-
   });
 
   $('#cityBtn').click(() => {

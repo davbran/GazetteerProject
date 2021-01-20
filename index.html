@@ -22,7 +22,6 @@
   <link rel="stylesheet" href="./libs/leaflet-extra-markers/leaflet.extra-markers.min.css" />
   <link rel="stylesheet" href="./libs/markercluster/MarkerCluster.css" />
 
-
   <title>Gazetteer</title>
 </head>
 
@@ -39,14 +38,28 @@
     
   </div>
 
-  <div class="navbar navbar-expand-lg bg-secondary navbar-light navbar-fixed-top">
-    <img src="./images/logo.png" id="logo" />
-    <button class="navbar-toggler text-warning border-warning badge" type="button" data-toggle="collapse"
-      data-target="#details" id="detailButton">
+<div class="navbar bg-secondary navbar-light navbar-fixed-top">
+
+  <img src="./images/logo.png" id="logo" />
+  <div class="options">
+    <button class="btn btn-warning" type="button" data-toggle="collapse" data-target="#details" id="detailButton">
+      <i class="fa fa-globe"></i>
       <span>Country Statistics</span>
     </button>
+
+    <button id="regionBtn" type="button" class="btn btn-warning" data-toggle="collapse" aria-expanded="true"
+      aria-controls="collapseExample">
+      <i class="fa fa-map"></i>
+      <span id="infoText">Regional</span>
+    </button>
+
+    <button id="cityBtn" type="button" class="btn btn-warning">
+      <i class="fa fa-city"></i>
+      <span id="infoText">Cities</span>
+    </button>
+  </div>
+    
     <ul class="collapse navbar-collapse text-warning list-unstyled" id="details">
-      
       <li class="info">Capital:&nbsp;<span id="capital"></span></li>
       <li class="info">Population:&nbsp;<span id="population"></span></li>
       <li class="info">Area(km<sup>2</sup>):&nbsp;<span id="area"></span></li>
@@ -60,58 +73,32 @@
   </div>
 
   <div class="container-fluid fill-height bg-light">
-    <div class="row bg-light" id="map">
+    <div class="row bg-light" id="map"></div>
+  </div>
 
-      <div class="btn-group btn-group-toggle fixed-bottom" data-toggle="buttons" id="options"></div>
-        <ul>
-        
-        <li>
-          <button id="cityBtn" type="button" class="btn" data-toggle="collapse" aria-expanded="true"
-          aria-controls="collapseExample">
-          <i class="fa fa-city"></i>
-          <span id="infoText">Cities</span>
-        </button>
-        </li>
-        <li>
-        <button id="regionBtn" type="button" class="btn" data-toggle="collapse" aria-expanded="true"
-          aria-controls="collapseExample">
-          <i class="fa fa-map"></i>
-          <span id="infoText">Regional</span>
-        </button>
-        </li>
-        </ul>
-      </div>
-
+<footer>
+  <div class="input-group mb-3">
+    <div class="input-group-prepend">
+      <label class="input-group-text bg-warning" for="poiSel">Points of Interest</label>
     </div>
-
-
-<div class="form-group">
-  <label for="poiSelect">Points of Interest</label>
-  <select class="form-control" name="poiSelect" id="poiSel">
-    <option disabled selected="selected">Please select...</option>
-    <option value="accomodations">Accomodation</option>
-    <option value="amusements">Amusements</option>
-    <option value="archaeology">Archaeology</option>
-    <option value="architecture">Architecture</option>
-    <option value="beaches">Beaches</option>
-    <option value="foods">Dining</option>
-    <option value="geological_formations">Geological Formations</option>
-    <option value="industrial_facilities">Industrial Facilities</option>
-    <option value="historical_places">Places of Historic Interest</option>
-    <option value="museums">Museums</option>
-    <option value="religion">Places of Religious Interest</option>
-    <option value="shops">Shopping</option>
-    <option value="theatres_and_entertainments">Theaters </option>
-    <option value="transport">Transport</option>
-    <option value="water">Water Features</option>
-  </select>
-</div>
+    <select class="custom-select" id="poiSel">
+      <option selected="selected" value="">Please select...</option>
+      <option value="architecture">Architecture</option>
+      <option value="cultural">Cultural</option>
+      <option value="historic">Historical</option>
+      <option value="natural">Natural</option>
+      <option value="sport">Sporting Interest/Facilities</option> 
+      <option value="tourist_facilities">Tourist Facilities</option>
+    </select>
+    
+  </div>
+</footer>
 
   <div class="modal" tabindex="-1" id="infoModal">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header bg-secondary">
-          <h5 class="modal-title bg-secondary text-warning" id="modalTitle"></h5>
+          <h5 class="modal-title bg-secondary text-warning" id="modalHeader"></h5>
           <br />
 
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -168,38 +155,38 @@
 
         </div>
         <div class="modal-footer bg-secondary">
-          <button type="button" class="btn" data-target="#generalInfo" data-toggle="collapse" aria-expanded="true"
+          <button type="button" class="btn btn-warning" data-target="#generalInfo" data-toggle="collapse" aria-expanded="true"
             aria-controls="collapseExample">
             <i class="fa fa-info"></i>
           </button>
-          <button type="button" class="btn" data-target="#wikiInfo" data-toggle="collapse" aria-expanded="false"
+          <button type="button" class="btn btn-warning" data-target="#wikiInfo" data-toggle="collapse" aria-expanded="false"
             aria-controls="collapseExample">
             <i class="fa" style="font-family: 'EB Garamond', serif;"> W </i>
 
           </button>
-          <button type="button" class="btn" data-target="#weatherInfo" data-toggle="collapse" aria-expanded="false"
+          <button type="button" class="btn btn-warning" data-target="#weatherInfo" data-toggle="collapse" aria-expanded="false"
             aria-controls="collapseExample">
             <i class="fa fa-cloud-sun"></i>
 
           </button>
-          <button type="button" class="btn" data-target="#forecastInfo" data-toggle="collapse" aria-expanded="false"
+          <button type="button" class="btn btn-warning" data-target="#forecastInfo" data-toggle="collapse" aria-expanded="false"
             aria-controls="collapseExample">
             <i class="fa fa-cloud-sun"><sub>+5</sub></i>
 
           </button>
-          <button type="button" class="btn" data-dismiss="modal">
+          <button type="button" class="btn btn-warning" data-dismiss="modal">
             <i class="fa fa-times-circle"></i>
           </button>
         </div>
       </div>
     </div>
   </div>
-  
+
 <div class="modal" tabindex="-1" id="poiInfoModal">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header bg-secondary">
-        <h5 class="modal-title bg-secondary text-warning" id="poiModalTitle"></h5>
+        <h5 class="modal-title bg-secondary text-warning" id="poiModalHeader"></h5>
         <br />
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
@@ -219,9 +206,6 @@
     <script src="./libs/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="./libs/leaflet-extra-markers/leaflet.extra-markers.min.js"></script>
     <script src="./libs/markercluster/leaflet.markercluster.min.js"></script>
-    <!--<script src="./scripts/country.js"></script>-->
-    <!-- <script src="./scripts/point-of-interest.js"></script> -->
-    <!-- <script src="./scripts/countryList.js"></script> -->
     <script src="./scripts/script.js"></script>    
 </body>
 
