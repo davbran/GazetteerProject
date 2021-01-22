@@ -434,7 +434,7 @@ class Country {
           $("#infoModal").modal();
       });
   }
-
+//// get regional data from geonames api, display in a marker cluster group
   getRegions() {
     regionLayer.clearLayers(),
       regionMarkers.clearLayers(regionLayer),
@@ -472,7 +472,7 @@ class Country {
       });
   }
 
-
+//////get bounding box for each country to use with opentripmap api
   getBoundingBox() {
     $.ajax({
       url: "php/getBoundingBox.php",
@@ -496,7 +496,8 @@ class Country {
 
   }
 
-
+//////get points of interest from opentripmap.io api with id, then get more info from second api
+//////with wiki data and photos and display in modal.
   getPois(north, south, east, west) {
     poiLayer.clearLayers(),
       $.ajax({

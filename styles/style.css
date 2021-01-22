@@ -1,186 +1,180 @@
-body, html {
-  background-color: #8e9297;
-  font-family: 'Libre Franklin', sans-serif;
-  font-size: 18px;
+body,
+html {
+ background-color:#8e9297;
+ font-family:libre franklin,sans-serif;
+ font-size:18px
 }
-
 #preloader {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 9999;
-  overflow: hidden;
-  background-color: #6c757d;
-  height: 100vh;
-  width: 100vw;
+ position:absolute;
+ top:0;
+ left:0;
+ right:0;
+ bottom:0;
+ z-index:9999;
+ overflow:hidden;
+ background-color:#6c757d;
+ height:100vh;
+ width:100vw
 }
-
 .full-height {
- display: flex;
-  flex-direction: column;
-  height: 100%;
+ display:flex;
+ flex-direction:column;
+ height:100%
 }
-
 .fill-height {
-  flex-grow: 1;
-  width: 100%;
+ flex-grow:1;
+ width:100%
 }
-
 .controlsdiv {
-  display: table;
-  width: 100%;
-  z-index: 9998;
+ display:table;
+ width:100%;
+ z-index:9998
 }
-
 #logo {
-  min-height: 80px;
-  height: 10vh;
-  margin-right: 10px;
+ min-height:80px;
+ height:10vh;
+ margin-right:10px
 }
-
 #search {
-  background-color: #ffc107;
-  padding: 5px;
-  border-bottom: 1px solid #6c757d;
+ background-color:#ffc107;
+ padding:5px;
+ border-bottom:1px solid #6c757d
 }
-
 #countrySearch {
-  font-family: 'Libre Franklin', sans-serif;
-  min-width: 270px;
-  width: 50vw;
-  height: 45px;
-  border-radius: 5px;
-  display: block;
-  margin: 0px auto;
-  outline: none;
+ font-family:libre franklin,sans-serif;
+ min-width:270px;
+ width:50vw;
+ height:45px;
+ border-radius:5px;
+ display:block;
+ margin:0 auto;
+ outline:none
 }
-
 .ui-autocomplete {
-  z-index: 9999 !important;
-  color: #080808;
-  border: 1px solid #6c757d;
-  background-color: #f8f7f6;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-  max-width: 270px;
+ z-index:9999!important;
+ color:#080808;
+ border:1px solid #6c757d;
+ background-color:#f8f7f6;
+ border-bottom-left-radius:5px;
+ border-bottom-right-radius:5px;
+ max-width:270px
 }
-
-
 #details {
-  margin: 1em;
+ margin:1em
 }
-
 .info {
-  margin-right: 1.2em;
+ margin-right:1.2em
 }
-
 #flag {
-  height: 5em;
+ height:5em
 }
-
 ::placeholder {
-  color: #6c757d;
+ color:#6c757d
 }
-
 .form-group {
-  color: #ffc107;
+ color:#ffc107
 }
-
-
+#poiInputLabel {
+ border:none
+}
 #map {
-  height: 100%;
-  min-width: 100vw;
+ height:100%;
+ min-width:100vw
 }
-
 #options {
-  height: 28px;
+ height:28px
 }
-
-#modalInfo, #modalBody {
-  font-size: 0.7em;
-  z-index: 9999 !important;
+#modalInfo,
+#modalBody {
+ font-size:.7em;
+ z-index:9999!important
 }
-
 .list-group-item {
-  background-color: #6c757d;
+ background-color:#6c757d
 }
-
-#weatherModalList, .forecastList {
-  text-transform: capitalize;
-}
-
+#weatherModalList,
 .forecastList {
-  background-color: #6c757d;
-  color: #ffc107;
-  font-size: 0.5em;
-  display: inline-grid;
-  list-style-type: square;
+ text-transform:capitalize
 }
-
+.forecastList {
+ background-color:#6c757d;
+ color:#ffc107;
+ font-size:.5em;
+ display:inline-grid;
+ list-style-type:square
+}
 .forecastList li:first-child {
-  list-style: none;
-  font-size: 1.3em;
-  color: #ffc107;
-  font-weight: bold;
+ list-style:none;
+ font-size:1.3em;
+ color:#ffc107;
+ font-weight:700
 }
-
 .forecastImg {
-  float: left;
-  height: 80px;
+ float:left;
+ height:80px
 }
-
 .region-marker-cluster {
-  background-color: rgba(153, 200, 146, 0.8);
+ background-color: aquamarine;
 }
-
 .region-marker-cluster div {
-  background-color: rgba(175, 213, 170, 0.6);
+ background-color: blue;
 }
-
 .marker-cluster {
-  background-clip: padding-box;
-  border-radius: 20px;
+ background-clip:padding-box;
+ border-radius:20px;
 }
-
 .marker-cluster div {
-  width: 30px;
-  height: 30px;
-  margin-left: 5px;
-  margin-top: 5px;
-  text-align: center;
-  border-radius: 15px;
-  font: 12px 'Libre Franklin', Arial, Helvetica, sans-serif;
-  color: #f8f9fa;
+ width:30px;
+ height:30px;
+ margin-left:5px;
+ margin-top:5px;
+ text-align:center;
+ border-radius:15px;
+ font:12px libre franklin,Arial,Helvetica,sans-serif;
+ color: #168776;
 }
-
 .marker-cluster span {
-  line-height: 30px;
+ line-height:30px
 }
-
 a {
-  color: #212529;
-  text-decoration: none;
-  background-color: transparent;
-  font-size:1em;
+ color:#212529;
+ text-decoration:none;
+ background-color:transparent;
+ font-size:1em
 }
-
-@media (min-width: 1200px) {
-  #countrySearch {
-    width: 30vw;
+@media(min-width:1200px) {
+ #countrySearch {
+  width:30vw
+ }
+}
+@media(max-width:900px) {
+ .btn,
+ label,
+ select {
+  font-size:1em
+ }
+ img {
+  max-width:80%
+ }
+ #poiSel {
+  max-width:60%
+ }
+  #logo {
+    display:none;
   }
 }
 
-@media (max-width: 900px) {
-  .btn, label, select {
-    font-size: 1em;
-  }
- 
-  img {
-    max-width: 80%;
-  }
-  #poiSel {
-  max-width:60%;
-}
+@media screen and (orientation:landscape)
+  and (min-device-width: 320px)
+  and (max-device-width: 800px) {
+    
+    #logo {
+      display:none;
+    }
+    .btn, label, select, #poiInputLabel, #poiSel {
+       font-size:0.8em;
+      
+ }
+    
+    
 }
