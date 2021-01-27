@@ -5,15 +5,18 @@ let countryBorder;
 
 
 //////map tile options
-const dark = L.tileLayer(
-  'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-  {
-    attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-    subdomains: 'abcd',
-    maxZoom: 19,
-  }
-);
+const mobile_atlas = L.tileLayer('https://{s}.tile.thunderforest.com/mobile-atlas/{z}/{x}/{y}.png?apikey={apikey}', {
+	attribution: '&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+	apikey: '3155abbaf2a94acd9ee6e3c487fd8c0f',
+  maxZoom: 22
+});
+
+const atlas = L.tileLayer('https://{s}.tile.thunderforest.com/atlas/{z}/{x}/{y}.png?apikey={apikey}', {
+	attribution: '&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+	apikey: '3155abbaf2a94acd9ee6e3c487fd8c0f',
+  maxZoom: 22
+});
+
 const satellite = L.tileLayer(
   'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
   {
@@ -22,25 +25,6 @@ const satellite = L.tileLayer(
       'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
   }
 );
-
-const light = L.tileLayer(
-  'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-  {
-    attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-    subdomains: 'abcd',
-    maxZoom: 19,
-  }
-);
-
-const topoMap = L.tileLayer(
-  'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
-  {
-    id: 'mapbox.streets',
-    tileSize: 512,
-    zoomOffset: -1,
-    attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
-  });
 
 const earthAtNight = L.tileLayer(
   'https://map1.vis.earthdata.nasa.gov/wmts-webmerc/VIIRS_CityLights_2012/default/{time}/{tilematrixset}{maxZoom}/{z}/{y}/{x}.{format}',
@@ -75,58 +59,172 @@ const clouds = L.tileLayer('https://tile.openweathermap.org/map/{layer}/{z}/{x}/
   layer: 'clouds_new',
 });
 
+////interest overlays
+const WaymarkedTrails_hiking = L.tileLayer('https://tile.waymarkedtrails.org/hiking/{z}/{x}/{y}.png', {
+	maxZoom: 18,
+	attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Map style: &copy; <a href="https://waymarkedtrails.org">waymarkedtrails.org</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+});
+const WaymarkedTrails_cycling = L.tileLayer('https://tile.waymarkedtrails.org/cycling/{z}/{x}/{y}.png', {
+	maxZoom: 18,
+	attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Map style: &copy; <a href="https://waymarkedtrails.org">waymarkedtrails.org</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+});
+const WaymarkedTrails_mtb = L.tileLayer('https://tile.waymarkedtrails.org/mtb/{z}/{x}/{y}.png', {
+	maxZoom: 18,
+	attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Map style: &copy; <a href="https://waymarkedtrails.org">waymarkedtrails.org</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+});
+const WaymarkedTrails_slopes = L.tileLayer('https://tile.waymarkedtrails.org/slopes/{z}/{x}/{y}.png', {
+	maxZoom: 18,
+	attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Map style: &copy; <a href="https://waymarkedtrails.org">waymarkedtrails.org</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+});
+const WaymarkedTrails_riding = L.tileLayer('https://tile.waymarkedtrails.org/riding/{z}/{x}/{y}.png', {
+	maxZoom: 18,
+	attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Map style: &copy; <a href="https://waymarkedtrails.org">waymarkedtrails.org</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+});
+
+
 /////create map with default layer
 const map = L.map('map', {
-  layers: [light],
+  layers: [mobile_atlas],
   zoomControl: false
 });
 
 ////add zoom control to map in top right corner
-new L.Control.Zoom({ position: 'topright' }).addTo(map);
+new L.Control.Zoom({ position: 'bottomright'}).addTo(map);
 
 //////add tile layers to control button and specify position
 
 const baseMaps = {
-  Light: light,
-  Dark: dark,
-  Topographic: topoMap,
+  Default: mobile_atlas,
+  Atlas: atlas,
   Satellite: satellite,
   'Earth At Night': earthAtNight,
 };
 
-const weatherOverlays = {
+const overlays = {
   Temperature: temperature,
   Precipitation: precipitation,
   Clouds: clouds,
+  Hiking: WaymarkedTrails_hiking,
+  Cycling: WaymarkedTrails_cycling,
+  MTB: WaymarkedTrails_mtb,
+  Slopes: WaymarkedTrails_slopes,
+  Riding: WaymarkedTrails_riding,
+  
+}
 
-};
+L.control.layers(baseMaps, overlays, { position:'bottomright' }).addTo(map);
 
-L.control.layers(baseMaps, weatherOverlays, { position: 'topright' }).addTo(map);
+L.control.scale({position:'bottomleft'}).addTo(map);
 
 
 /////initialise layer groups
 const poiLayer = L.layerGroup();
 const cityLayer = L.layerGroup();
-const regionLayer = L.layerGroup();
-const regionMarkers = L.markerClusterGroup({
+const cityMarkers = L.markerClusterGroup({
+  
   iconCreateFunction: (cluster) => {
+    const count = cluster.getChildCount();
+    const digits = (count + '').length;
     return L.divIcon({
-      html: `<div><span>${cluster.getChildCount()}</span></div>`,
-      className: 'region marker-cluster marker-cluster',
+      html: count,
+      className: 'cluster digits-' + digits,
       iconSize: new L.Point(40, 40),
     });
   },
 });
 
-/////populate list of countries from countries_large.geo.json
-const getCountryList = () => {
-  const url = 'php/getCountryList.php';
-  $.getJSON(url, (data) => {
-    $(data).each((_key, value) => {
-      countryList.push(value);
+const regionLayer = L.layerGroup();
+const regionMarkers = L.markerClusterGroup({
+  
+  iconCreateFunction: (cluster) => {
+    const count = cluster.getChildCount();
+    const digits = (count + '').length;
+    return L.divIcon({
+      html: count,
+      className: 'cluster digits-' + digits,
+      iconSize: new L.Point(40, 40),
     });
-  });
-};
+  },
+});
+
+const cityButton = L.easyButton(
+  
+  {
+  id: 'city-marker-toggle',
+  position: 'topright',
+  states: [{
+    stateName: 'add-markers',
+    icon: '<strong>Cities</strong>',
+    title: 'Show Cities',
+    onClick: function(control) {
+      map.removeLayer(poiLayer);
+      map.removeLayer(regionMarkers);
+      map.addLayer(cityMarkers);
+      control.state('remove-markers');
+    }
+  
+  }]
+});
+cityButton.addTo(map);
+
+const regionButton = L.easyButton(
+  
+  {
+  id: 'region-marker-toggle',
+  position: 'topright',
+  states: [{
+    stateName: 'add-markers',
+    icon: '<strong>Regions</strong>',
+    title: 'Show Regions',
+    onClick: function(control) {
+      map.removeLayer(poiLayer);
+      map.removeLayer(cityMarkers);
+      map.addLayer(regionMarkers);
+      control.state('remove-markers');
+    }
+ 
+  }]
+});
+regionButton.addTo(map);
+
+const infoButton = L.easyButton(
+  {
+  id: 'country-info-toggle',
+  position: 'topright',
+  states: [{
+    icon: 'fa fa-info',
+    title: 'Show Country Info',
+    onClick: function(control) {
+     $('#details').modal("show");
+    }
+  }]
+}
+);
+
+infoButton.addTo(map);
+
+
+/////populate list of countries from countryBorders.geo.json
+const getCountryList = () => {
+let select = $('#countrySelect');
+
+select.empty();
+
+select.append('<option selected="true" disabled>Choose Country</option>');
+select.prop('selectedIndex, 1');
+
+const url = 'php/getCountryList.php';
+
+$.getJSON(url, function (data) {
+  console.log(data);
+  $.each(data.results, function (key, entry) {
+    countryList.push(entry);
+    select.append($('<option></option>').attr('value', entry.name).text(entry.name));
+  })
+});
+}; 
+
+
 
 //////get info on selected country from https://restcountries.eu
 const getCountryInfo = (countryCode) => {
@@ -143,12 +241,17 @@ const getCountryInfo = (countryCode) => {
     const activeCountry = new Country(
       c.name,
       c.alpha2Code,
-      c.area,
       c.flag,
-      c.capital,
-      c.population,
+      c.area,
+      c.capital, 
       c.currencies[0].name,
-      c.currencies[0].symbol
+      c.currencies[0].symbol,
+      c.population,
+      c.region,
+      c.subregion,
+      c.borders,
+      c.nativeName,
+      c.languages[0].name
     );
 
     activeCountry.displayInfo();
@@ -171,15 +274,14 @@ const selectNewCountry = (country, type) => {
     },
   })
     .done((result) => {
-      const countryCode = result.properties.ISO_A3;
+      const countryCode = result.properties.iso_a3;
 
       if (countryBorder) {
         countryBorder.clearLayers();
       }
       countryBorder = L.geoJSON(result, {
         style: {
-          color: '#ffc107'
-          ,
+          color: '#ed254e',
         },
       }).addTo(map);
       map.fitBounds(countryBorder.getBounds());
@@ -189,18 +291,6 @@ const selectNewCountry = (country, type) => {
     .fail(() => {
       console.log('Error in selectNewCountry');
     });
-};
-
-
-/////////adjust size of font for larger country names to fit in search bar
-const adjustSearchBarFont = (country) => {
-  if (country.length > 25) {
-    $('#countrySearch').css('font-size', '0.6em');
-  } else if (country.length > 15) {
-    $('#countrySearch').css('font-size', '1em');
-  } else {
-    $('#countrySearch').css('font-size', '1.3em');
-  }
 };
 
 /////////retrieve country name from users coordinates
@@ -219,8 +309,7 @@ const getCountryFromCoords = (latitude, longitude) => {
       const alpha3Code = data['ISO_3166-1_alpha-3'];
 
       if (data.country) {
-        $('#countrySearch').val(data.country);
-        adjustSearchBarFont(data.country);
+        $('#countrySelect').val(data.country);
         selectNewCountry(alpha3Code, 'code');
       }
     })
@@ -266,9 +355,8 @@ const jumpToUserLocation = () => {
 };
 
 
-const handleSearchbarChange = (event, ui) => {
-  const country = ui.item.value;
-  adjustSearchBarFont(country);
+const handleSearchbarChange = () => {
+  let country = $('#countrySelect').val();
   selectNewCountry(country, 'name');
 };
 
@@ -278,19 +366,12 @@ const getCountryFromClick = (event) => {
   getCountryFromCoords(lat, lng);
 };
 
-//////autocomplete from jquery ui for country search bar
-$('#countrySearch').autocomplete({
-  source: countryList,
-  minLength: 0,
-  select: handleSearchbarChange,
-  position: { my: 'top', at: 'bottom', of: '#countrySearch' },
-});
 
 ///////////info popup with either city or region data
 const infoPopup = (event) => {
   let marker;
   const markerDetails = event.target.options;
-  //create either new city or regionobject
+  //create either new city or region object
   if (markerDetails.type == 'city') {
     marker = new City(
       markerDetails.latitude,
@@ -310,11 +391,12 @@ const infoPopup = (event) => {
     );
   }
 
+  marker.getDistanceFromLatLonInKm(userCoordinates.latitude, userCoordinates.longitude);
   marker.getWikiDetails();
   marker.getWeatherInfo();
 };
 
-///////remove loader once htnl has rendered
+///////remove loader once html has rendered
 const removeLoader = () => {
   if (countryBorder) {
     $('#preloader')
@@ -336,46 +418,47 @@ $(document).ready(() => {
 
   getCountryList();
 
-  $('#countrySearch').click(() => $('#countrySearch').val(''));
+  $('#countrySelect').change(() => $('#countrySelect').val());
 
   map.on('click', getCountryFromClick);
+  
 
   $('#poiSel').change(() => {
-    map.removeLayer(cityLayer);
+    map.removeLayer(cityMarkers);
     map.removeLayer(regionMarkers);
     map.addLayer(poiLayer);
   });
 
-  $('#cityBtn').click(() => {
-    map.removeLayer(poiLayer);
-    map.removeLayer(regionMarkers);
-    map.addLayer(cityLayer);
-  });
 
-  $('#regionBtn').click(() => {
-    map.removeLayer(poiLayer);
-    map.removeLayer(cityLayer);
-    map.addLayer(regionMarkers);
-  });
+  $('#countrySelect').change(() => {
+    handleSearchbarChange($('#countrySelect').val());
+  })
 
 });
 
 ////Create country class 
 
 class Country {
-  constructor(name, alpha2Code, area, flag, capital, population, currency, currencySymbol) {
+  constructor(name, alpha2Code, flag, area, capital, currency, currencySymbol, population, region, subregion, borders, nativeName, languages) {
     this.name = name,
       this.alpha2Code = alpha2Code,
+      this.flag = flag;
       this.area = area || "Not Found",
       this.capital = capital || "Not Found",
-      this.population = population || "Not Found",
       this.currency = currency || "Not Found",
       this.currencySymbol = currencySymbol || "",
-      this.flag = flag;
-  }
+      this.population = population || "Not Found",
+      this.region= region,
+      this.subregion = subregion,
+      this.borders = borders || "Not Found",
+      this.nativeName = nativeName || "Not Found",
+      this.languages = languages || "Not Found";
+
+   }
 
   getCities() {
     cityLayer.clearLayers(),
+      cityMarkers.clearLayers(cityLayer),
       $.ajax({
         url: "php/getCityData.php",
         dataType: "json",
@@ -386,15 +469,15 @@ class Country {
       }
       ).done(result => {
         const marker = L.ExtraMarkers.icon({
-          icon: " fa-map-pin",
-          markerColor: "#BBDEF0",
+          icon: " fa-city",
+          markerColor: "#011936",
           shape: "circle",
           svg: !0,
           prefix: "fa"
         }),
           capitalMarker = L.ExtraMarkers.icon({
-            icon: " fa-map-pin",
-            markerColor: "#2C95C9",
+            icon: " fa-city",
+            markerColor: "#011936",
             shape: "star",
             svg: !0,
             prefix: "fa"
@@ -428,6 +511,7 @@ class Country {
             newMarker.on("click", infoPopup);
           }
         });
+        cityMarkers.addLayer(cityLayer);
       }).fail(() => {
         $("#modalHeader").html("Error"),
           $("#modalBody").html("Error fetching city information. Please try again or select a different country."),
@@ -448,7 +532,7 @@ class Country {
       }).done(result => {
         const marker = L.ExtraMarkers.icon({
           icon: "fa-map-pin",
-          markerColor: "#AFD5AA",
+          markerColor: "#011936",
           shape: "circle",
           svg: !0,
           prefix: "fa"
@@ -516,7 +600,7 @@ class Country {
           const newPoi = L.circleMarker([poi.point.lat, poi.point.lon],
             {
               radius: 5,
-              color: '#874831',
+              color: '#011936',
               fillOpacity: 0.5,
             })
             .addTo(poiLayer);
@@ -538,7 +622,7 @@ class Country {
               $("#poiModalHeader").html(data.name),
                 $("#poiModalBody").html("<img src='" + image + "' alt='" + data.name + "'>" +
                   "</br>" + data.wikipedia_extracts.html +
-                  "</br><button class='btn btn-warning'><a target='_blank' href='" + wikiLink + "'><em>More Info on Wikipedia</em></a></button</p>");
+                  "</br><button class='btn btn-info'><a target='_blank' href='" + wikiLink + "'><em>More Info on Wikipedia</em></a></button</p>");
               $("#poiInfoModal").modal();
 
 
@@ -554,12 +638,19 @@ class Country {
   }
 
   ////display country statistics
-  displayInfo() {
-    $("#flag").attr('src', this.flag),
-      $("#area").html(` ${this.area}`),
+  displayInfo() { 
+    
+    $('#countryName').html(`${this.name}`),
+      $("#flag").attr('src', this.flag),
+      $("#area").html(` ${(this.area).toLocaleString()}`),
       $("#capital").html(` ${this.capital}`),
       $("#currency").html(` ${this.currency} (${this.currencySymbol})`),
-      $("#population").html(` ${this.population}`);
+      $("#population").html(` ${(this.population).toLocaleString()}`),
+      $("#region").html(` ${this.region}`),
+      $("#subregion").html(` ${this.subregion}`),
+      $("#borders").html(` ${this.borders}`),
+      $("#nativeName").html(` ${this.nativeName}`),
+      $("#languages").html(` ${this.languages}`);
   }
 
 
@@ -577,6 +668,26 @@ class Features {
     this.name = name;
     this.population = population;
     this.type = type;
+  }
+
+
+  deg2rad(deg) {
+    return deg * (Math.PI / 180);
+  }
+
+  getDistanceFromLatLonInKm(lat1, lon1) {
+    const R = 6371; // Radius of the earth in km
+    const dLat = this.deg2rad(this.latitude - lat1);
+    const dLon = this.deg2rad(this.longitude - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(this.deg2rad(lat1)) *
+      Math.cos(this.deg2rad(this.latitude)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const d = R * c;
+    this.distance = d.toFixed();
   }
 
   ////get wikipedia summary for chosen feature and display on modal
@@ -688,11 +799,12 @@ class Features {
         `https://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png`
       );
       $(`#forecast${i}`).html(
-        `<li>${dayOfWeek}</li><li>${day.weather[0].description
-        }</li><li>Min Temp:&nbsp;${day.temp.min.toFixed()}&#8451;
-        </li><li>Max Temp:&nbsp;${day.temp.max.toFixed()}&#8451;
-        </li><li>Humidity:&nbsp;${day.humidity}%;</li>
-        </li><li>Wind Speed:&nbsp;${Math.round(day.wind_speed * 2.237)}mph;</li>`
+        `<ul><li>${dayOfWeek}</li>
+        <li>${day.weather[0].description}</li>
+        <li><b>${day.temp.max.toFixed()}&#8451;</b></li>
+        <li>${day.temp.min.toFixed()}&#8451;</li>
+        <li>${day.humidity}%;</li>
+        <li>${Math.round(day.wind_speed * 2.237)}mph;</li><ul>`
       );
 
       i++;
@@ -704,12 +816,10 @@ class Features {
       `https://openweathermap.org/img/wn/${this.currentWeather.icon}@2x.png`
     );
     $('#weatherModalList').html(
-      `<li>${this.currentWeather.description
-      }</li><li>Temperature:&nbsp; ${this.currentTemp.toFixed()
-      }&#8451;</li><li>Humidity:&nbsp;
-      ${this.humidity
-      }%</li><li>Pressure:&nbsp
-      ${this.pressure}mb</li>`
+      `<ul><li>${this.currentWeather.description}</li>
+      <li>${this.currentTemp.toFixed()}&#8451;</li>
+      <li>${this.humidity}%</li>
+      <li>${this.pressure}mb</li></ul>`
     );
   }
 }
@@ -719,14 +829,35 @@ class Features {
 class Region extends Features {
   constructor(latitude, longitude, geonameId, name) {
     super(latitude, longitude, geonameId, name);
-    this.type = 'region';
   }
 
   displayInfo() {
     this.getTime();
     $('#modalHeader').html(`${this.name}`);
     $('#modalInfo').html(
-      `<li>Current Time: &nbsp; ${this.time}</li><li>Estimated Population: &nbsp; ${this.population}</li><li>Latitude: &nbsp; ${this.latitude}</li><li>Longitude: &nbsp; ${this.longitude}</li>`
+      `<table class="table table-striped table-responsive">
+      
+        <tr>
+          <th scope="row">Current Time</th>
+          <td>${this.time}</td>
+        </tr>
+        <tr>
+          <th scope="row">Latitude</th>
+          <td>${this.latitude}</td>
+        </tr>
+        <tr>
+          <th scope="row">Longitude</th>
+          <td>${this.longitude}</td>
+        </tr>
+        <tr>
+          <th scope="row">Distance from your location</th>
+          <td>${this.distance}km</td>
+        </tr>
+      </tbody>
+    </table>
+    
+  </div>`
+      
     );
     $('#wikiInfo').removeClass('show');
     $('#forecastInfo').removeClass('show');
@@ -746,9 +877,33 @@ class City extends Features {
     this.getTime();
     $('#modalHeader').html(`${this.name}`);
     $('#modalInfo').html(
-      `<li>Current Time: &nbsp; ${this.time}</li><li>Estimated Population: &nbsp; ${this.population}</li>
-      <li>Latitude: &nbsp; ${this.latitude}</li><li>Longitude: &nbsp; ${this.longitude}</li>`
-    );
+      `<table class="table table-striped table-responsive">
+      
+        <tr>
+          <th scope="row">Current Time</th>
+          <td>${this.time}</td>
+        </tr>
+        <tr>
+          <th scope="row">Population</th>
+          <td>${(this.population).toLocaleString()}</td>
+        </tr>
+        <tr>
+          <th scope="row">Latitude</th>
+          <td>${this.latitude}</td>
+        </tr>
+        <tr>
+          <th scope="row">Longitude</th>
+          <td>${this.longitude}</td>
+        </tr>
+        <tr>
+          <th scope="row">Distance from your location</th>
+          <td>${this.distance}km</td>
+        </tr>
+      </tbody>
+    </table>
+    
+  </div>`
+  );
     $('#wikiInfo').removeClass('show');
     $('#forecastInfo').removeClass('show');
     $('#weatherInfo').removeClass('show');
@@ -756,4 +911,3 @@ class City extends Features {
     $('#infoModal').modal();
   }
 }
-
