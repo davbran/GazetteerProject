@@ -5,16 +5,16 @@ let countryBorder;
 
 
 //////map tile options
-const mobile_atlas = L.tileLayer('https://{s}.tile.thunderforest.com/mobile-atlas/{z}/{x}/{y}.png?apikey={apikey}', {
-	attribution: '&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-	apikey: '3155abbaf2a94acd9ee6e3c487fd8c0f',
-  maxZoom: 22
+const osm_carto = L.tileLayer('https://maps.geoapify.com/v1/tile/osm-carto/{z}/{x}/{y}.png?apiKey=e6745b0fef35494f952a40eca9cdc52d', {
+  attribution: 'Powered by <a href="https://www.geoapify.com/" target="_blank">Geoapify</a> | © OpenStreetMap <a href="https://www.openstreetmap.org/copyright" target="_blank">contributors</a>',
+  maxZoom: 20,
+  id: 'osm-bright'
 });
 
-const atlas = L.tileLayer('https://{s}.tile.thunderforest.com/atlas/{z}/{x}/{y}.png?apikey={apikey}', {
-	attribution: '&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-	apikey: '3155abbaf2a94acd9ee6e3c487fd8c0f',
-  maxZoom: 22
+const dark_matter = L.tileLayer('https://maps.geoapify.com/v1/tile/dark-matter-dark-grey/{z}/{x}/{y}.png?apiKey=e6745b0fef35494f952a40eca9cdc52d', {
+  attribution: 'Powered by <a href="https://www.geoapify.com/" target="_blank">Geoapify</a> | © OpenStreetMap <a href="https://www.openstreetmap.org/copyright" target="_blank">contributors</a>',
+  maxZoom: 20,
+  id: 'osm-bright'
 });
 
 const satellite = L.tileLayer(
@@ -84,7 +84,7 @@ const WaymarkedTrails_riding = L.tileLayer('https://tile.waymarkedtrails.org/rid
 
 /////create map with default layer
 const map = L.map('map', {
-  layers: [mobile_atlas],
+  layers: [osm_carto],
   zoomControl: false
 });
 
@@ -93,8 +93,8 @@ const map = L.map('map', {
 //////add tile layers to control button and specify position
 
 const baseMaps = {
-  Default: mobile_atlas,
-  Atlas: atlas,
+  Default: osm_carto,
+  Dark: dark_matter,
   Satellite: satellite,
   'Earth At Night': earthAtNight,
 };
@@ -314,7 +314,7 @@ const selectNewCountry = (country, type) => {
       }
       countryBorder = L.geoJSON(result, {
         style: {
-          color: '#ed254e',
+          color: '#fb5607',
         },
       }).addTo(map);
       map.fitBounds(countryBorder.getBounds());
@@ -385,7 +385,7 @@ const jumpToUserLocation = () => {
   } else {
     selectNewCountry('GBR', 'code');
   }
-};
+}; 
 
 
 const handleSearchbarChange = () => {
@@ -503,14 +503,14 @@ class Country {
       ).done(result => {
         const marker = L.ExtraMarkers.icon({
           icon: " fa-city",
-          markerColor: "#011936",
+          markerColor: "#81b29a",
           shape: "circle",
           svg: !0,
           prefix: "fa"
         }),
           capitalMarker = L.ExtraMarkers.icon({
             icon: " fa-city",
-            markerColor: "#011936",
+            markerColor: "#e07a5f",
             shape: "star",
             svg: !0,
             prefix: "fa"
@@ -565,7 +565,7 @@ class Country {
       }).done(result => {
         const marker = L.ExtraMarkers.icon({
           icon: "fa-map-pin",
-          markerColor: "#011936",
+          markerColor: "#f9dc5c",
           shape: "circle",
           svg: !0,
           prefix: "fa"
@@ -633,7 +633,7 @@ class Country {
           const newPoi = L.circleMarker([poi.point.lat, poi.point.lon],
             {
               radius: 5,
-              color: '#011936',
+              color: '#263d42',
               fillOpacity: 0.5,
             })
             .addTo(poiLayer);
