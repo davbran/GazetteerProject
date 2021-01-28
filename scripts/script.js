@@ -88,8 +88,7 @@ const map = L.map('map', {
   zoomControl: false
 });
 
-////add zoom control to map in top right corner
-new L.Control.Zoom({ position: 'bottomright'}).addTo(map);
+
 
 //////add tile layers to control button and specify position
 
@@ -112,7 +111,9 @@ const overlays = {
   
 }
 
-L.control.layers(baseMaps, overlays, { position:'bottomright' }).addTo(map);
+L.control.layers(baseMaps, overlays, { position:'topleft' }).addTo(map);
+////add zoom control to map in top left corner
+new L.Control.Zoom({ position: 'topleft'}).addTo(map);
 
 L.control.scale({position:'bottomleft'}).addTo(map);
 
@@ -152,10 +153,12 @@ const cityButton = L.easyButton(
   {
   id: 'city-marker-toggle',
   position: 'topright',
+  leafletClasses:false,
   states: [{
     stateName: 'add-markers',
     icon: '<strong>Cities</strong>',
     title: 'Show Cities',
+    
     onClick: function(control) {
       map.removeLayer(poiLayer);
       map.removeLayer(regionMarkers);
@@ -165,13 +168,14 @@ const cityButton = L.easyButton(
   
   }]
 });
-cityButton.addTo(map);
+
 
 const regionButton = L.easyButton(
   
   {
   id: 'region-marker-toggle',
   position: 'topright',
+  leafletClasses:false,
   states: [{
     stateName: 'add-markers',
     icon: '<strong>Regions</strong>',
@@ -185,12 +189,13 @@ const regionButton = L.easyButton(
  
   }]
 });
-regionButton.addTo(map);
+
 
 const infoButton = L.easyButton(
   {
   id: 'country-info-toggle',
   position: 'topright',
+  leafletClasses:false,
   states: [{
     icon: 'fa fa-info',
     title: 'Show Country Info',
@@ -202,7 +207,35 @@ const infoButton = L.easyButton(
 );
 
 infoButton.addTo(map);
+regionButton.addTo(map);
+cityButton.addTo(map);
 
+
+const fullscreenButton = L.easyButton(
+  
+  {
+  id: 'fullscreen-toggle',
+  position: 'bottomright',
+  leafletClasses:false,
+  states: [{
+    stateName: 'fullscreen',
+    icon: 'fas fa-expand-arrows-alt',
+    title: 'Switch to fullscreen',
+    onClick: function(control) {
+      openFullscreen();
+      control.state('close-fullscreen');
+    }
+  },{ 
+      title: 'Exit full screen',
+      icon: 'fa-compress-arrows-alt',
+      stateName: "close-fullscreen",
+      onClick: function(control) {
+        closeFullscreen();
+        control.state('fullscreen');
+      },
+  }]
+});
+fullscreenButton.addTo(map);
 
 /////populate list of countries from countryBorders.geo.json
 const getCountryList = () => {
@@ -622,7 +655,7 @@ class Country {
               $("#poiModalHeader").html(data.name),
                 $("#poiModalBody").html("<img src='" + image + "' alt='" + data.name + "'>" +
                   "</br>" + data.wikipedia_extracts.html +
-                  "</br><button class='btn btn-info'><a target='_blank' href='" + wikiLink + "'><em>More Info on Wikipedia</em></a></button</p>");
+                  "</br><button class='btn btn-info'><a target='_blank' href='" + wikiLink + "'><i class='fab fa-wikipedia-w'></i></a></button</p>");
               $("#poiInfoModal").modal();
 
 
@@ -835,7 +868,7 @@ class Region extends Features {
     this.getTime();
     $('#modalHeader').html(`${this.name}`);
     $('#modalInfo').html(
-      `<table class="table table-striped table-responsive">
+      `<table id="regionInfo" class="table table-striped table-responsive">
       
         <tr>
           <th scope="row">Current Time</th>
@@ -877,7 +910,7 @@ class City extends Features {
     this.getTime();
     $('#modalHeader').html(`${this.name}`);
     $('#modalInfo').html(
-      `<table class="table table-striped table-responsive">
+      `<table id="cityInfo"class="table table-striped table-responsive">
       
         <tr>
           <th scope="row">Current Time</th>
@@ -909,5 +942,28 @@ class City extends Features {
     $('#weatherInfo').removeClass('show');
     $('#generalInfo').addClass('show');
     $('#infoModal').modal();
+  }
+}
+
+
+/////full screen function fo mobile
+var elem = document.documentElement;
+function openFullscreen() {
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.webkitRequestFullscreen) { /* Safari */
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) { /* IE11 */
+    elem.msRequestFullscreen();
+  }
+}
+
+function closeFullscreen() {
+  if (document.exitFullscreen) {
+    document.exitFullscreen();
+  } else if (document.webkitExitFullscreen) { /* Safari */
+    document.webkitExitFullscreen();
+  } else if (document.msExitFullscreen) { /* IE11 */
+    document.msExitFullscreen();
   }
 }
