@@ -1,6 +1,6 @@
 <?php
 
-$url = "http://api.geonames.org/searchJSON?country=".$_REQUEST['countryCode']."&countryBias=".$_REQUEST['countryCode']."&featureClass=A&maxRows=40&orderby=relevance&username=davbranciamore";
+$url = "http://api.geonames.org/searchJSON?country=".$_REQUEST['countryCode']."&countryBias=".$_REQUEST['countryCode']."&featureClass=A&maxRows=40&orderby=relevance&username={apiKey}";
 
 $ch = curl_init();
 
