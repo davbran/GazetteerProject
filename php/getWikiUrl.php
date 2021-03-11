@@ -1,5 +1,5 @@
 <?php
-$url = "http://api.geonames.org/getJSON?geonameId=".$_REQUEST['geonameId']."&username=davbranciamore";
+$url = "http://api.geonames.org/getJSON?geonameId=".$_REQUEST['geonameId']."&username={apiKey}";
 
 $ch = curl_init();
 
