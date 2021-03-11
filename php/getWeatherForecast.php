@@ -1,6 +1,6 @@
 <?php
 
-$url = "https://api.openweathermap.org/data/2.5/onecall?lat=".$_REQUEST['latitude']."&lon=".$_REQUEST['longitude']."&exclude=hourly,minutely&units=metric&appid=432485623db5921a4cbec16a0c6e02cb";
+$url = "https://api.openweathermap.org/data/2.5/onecall?lat=".$_REQUEST['latitude']."&lon=".$_REQUEST['longitude']."&exclude=hourly,minutely&units=metric&appid={apiKey}";
 
 $ch = curl_init();
 
