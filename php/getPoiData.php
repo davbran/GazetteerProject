@@ -3,7 +3,7 @@
 $curl = curl_init();
 
 curl_setopt_array($curl, [
-	CURLOPT_URL => 'https://api.opentripmap.com/0.1/en/places/bbox?lon_min='.$_REQUEST['west'].'&lon_max='.$_REQUEST['east'].'&lat_min='.$_REQUEST['south'].'&lat_max='.$_REQUEST['north'].'&kinds='.$_REQUEST['kind'].'&rate=2&format=json&limit=250&apikey=5ae2e3f221c38a28845f05b650a26f99f2ef0bb05b92e586d15fd31a',
+	CURLOPT_URL => 'https://api.opentripmap.com/0.1/en/places/bbox?lon_min='.$_REQUEST['west'].'&lon_max='.$_REQUEST['east'].'&lat_min='.$_REQUEST['south'].'&lat_max='.$_REQUEST['north'].'&kinds='.$_REQUEST['kind'].'&rate=2&format=json&limit=250&apikey={apiKey}',
 	CURLOPT_RETURNTRANSFER => true,
 	CURLOPT_FOLLOWLOCATION => true,
 	CURLOPT_ENCODING => "",
