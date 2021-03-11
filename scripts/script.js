@@ -5,13 +5,13 @@ let countryBorder;
 
 
 //////map tile options
-const osm_carto = L.tileLayer('https://maps.geoapify.com/v1/tile/osm-carto/{z}/{x}/{y}.png?apiKey=e6745b0fef35494f952a40eca9cdc52d', {
+const osm_carto = L.tileLayer('https://maps.geoapify.com/v1/tile/osm-carto/{z}/{x}/{y}.png?apiKey={apiKey}', {
   attribution: 'Powered by <a href="https://www.geoapify.com/" target="_blank">Geoapify</a> | © OpenStreetMap <a href="https://www.openstreetmap.org/copyright" target="_blank">contributors</a>',
   maxZoom: 20,
   id: 'osm-bright'
 });
 
-const dark_matter = L.tileLayer('https://maps.geoapify.com/v1/tile/dark-matter-dark-grey/{z}/{x}/{y}.png?apiKey=e6745b0fef35494f952a40eca9cdc52d', {
+const dark_matter = L.tileLayer('https://maps.geoapify.com/v1/tile/dark-matter-dark-grey/{z}/{x}/{y}.png?apiKey={apiKey}', {
   attribution: 'Powered by <a href="https://www.geoapify.com/" target="_blank">Geoapify</a> | © OpenStreetMap <a href="https://www.openstreetmap.org/copyright" target="_blank">contributors</a>',
   maxZoom: 20,
   id: 'osm-bright'
@@ -40,19 +40,19 @@ const earthAtNight = L.tileLayer(
 );
 
 /////weather overlay options
-const temperature = L.tileLayer('https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid=adcf651d877266947f5d5edc61315f6e', {
+const temperature = L.tileLayer('https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid={apiKey}', {
   tileSize: 512,
   zoomOffset: -1,
   layer: 'temp_new',
   minZoom: 2,
 });
-const precipitation = L.tileLayer('https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid=adcf651d877266947f5d5edc61315f6e', {
+const precipitation = L.tileLayer('https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid={apiKey}', {
   tileSize: 512,
   minZoom: 2,
   zoomOffset: -1,
   layer: 'precipitation_new',
 });
-const clouds = L.tileLayer('https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid=adcf651d877266947f5d5edc61315f6e', {
+const clouds = L.tileLayer('https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid={apiKey}', {
   tileSize: 512,
   minZoom: 2,
   zoomOffset: -1,
